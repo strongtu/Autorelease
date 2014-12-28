@@ -72,12 +72,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="autoreleasepool.h" />
     <ClInclude Include="classinfo.h" />
     <ClInclude Include="gobject.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="autoreleasepool.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="classinfo.cpp" />
     <ClCompile Include="gobject.cpp" />

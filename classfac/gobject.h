@@ -12,7 +12,8 @@ protected:
 	virtual ~GObject();
 
 public:
-    int retain(void);
+    GObject* retain(void);
+    GObject* autorelease(void);
     int release(void);
 
 private:

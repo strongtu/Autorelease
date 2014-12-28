@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "gobject.h"
+#include "autoreleasePool.h"
 
 GClassInfo GObject::_classInfo("GObject", NULL,  sizeof(GObject), GObject::createObject); 
 
@@ -22,9 +23,16 @@ GObject::~GObject()
 {
 }
 
-int GObject::retain(void)
+GObject* GObject::retain(void)
 {
-    return ++m_ref;
+    ++m_ref;
+    return this;
+}
+
+GObject* GObject::autorelease(void)
+{
+    GAutoreleasePool::addObject(this);
+    return this;
 }
 
 int GObject::release(void)

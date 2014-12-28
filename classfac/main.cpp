@@ -4,6 +4,7 @@
 #include "stdafx.h"
 
 #include "gobject.h"
+#include "autoreleasepool.h"
 
 class TestClass : public GObject
 {
@@ -24,10 +25,16 @@ class TestClassB : public TestClass
 
 IMPLEMENT_GDYNAMIC_CLASS(TestClassB, TestClass)
 
+
 int main()
 {
+    GAutoreleasePool * atp = (GAutoreleasePool*)GAutoreleasePool::createObject();
+
 	TestClass* t = (TestClass*)GClassInfo::createObject("TestClassB");
 	t->print();
+    t->autorelease();
+
+    atp->release();
 
 	return 0;
 }
