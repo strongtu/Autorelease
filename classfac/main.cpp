@@ -5,6 +5,7 @@
 
 #include "gobject.h"
 #include "autoreleasepool.h"
+#include "gdata.h"
 
 class TestClass : public GObject
 {
@@ -31,8 +32,20 @@ int main()
     GAutoreleasePool * atp = (GAutoreleasePool*)GAutoreleasePool::createObject();
 
 	TestClass* t = (TestClass*)GClassInfo::createObject("TestClassB");
+
 	t->print();
     t->autorelease();
+
+    GData* pdata = (GData*)GClassInfo::createObject("GData");
+    pdata->setBool("b", true);
+    pdata->setInt("i", 1983);
+
+    bool b = pdata->getBool("b3");
+    int i = pdata->getInt("i2");
+
+    pdata->delField("b");
+
+    pdata->release();
 
     atp->release();
 
