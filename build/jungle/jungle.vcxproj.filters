@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>project</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gdata.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gobject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gtype.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gclassinfo.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gatpool.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gview.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="jungle.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\jungle\gdata.cpp">
+      <Filter>jungle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\jungle\gobject.cpp">
+      <Filter>jungle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\gview.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\jungle\gclassinfo.cpp">
+      <Filter>jungle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\jungle\gatpool.cpp">
+      <Filter>jungle</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="graphic">
+      <UniqueIdentifier>{3ac33955-9ad8-4291-9c65-9d8f877204e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jungle">
+      <UniqueIdentifier>{55710dfc-5d1e-4786-b0f5-c206bf1c9fb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="project">
+      <UniqueIdentifier>{d1700315-7142-43f7-99b4-6404f647b9eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{a00c5a3e-e817-4d61-ae26-6b1983f233a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{13b231fb-209a-42ec-9534-a73f407e9cff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
