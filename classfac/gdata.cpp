@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "gdata.h"
+#include "tcmalloc\tcmalloc.h"
 
 IMPLEMENT_GDYNAMIC_CLASS(GData, GObject)
 
@@ -65,6 +66,15 @@ void GData::delField(FieldNameType szKey)
             return;
         }   
     }
+}
+
+int GData::getDoc(char* outBuf, int len) const
+{
+    return 0;
+}
+
+bool GData::setDoc(const char* outBuf, int len)
+{
 }
 
 bool GData::getBool(const char* szKey) const
@@ -167,6 +177,7 @@ bool GData::reserve(int size)
     freeBuffer(m_buffer);
 
     m_buffer = new_buffer;
+    m_allocCount = new_count;
 
 	return true;
 }
@@ -259,12 +270,12 @@ void GData::freeItem(int index)
 
 void* GData::allocBuffer(int size) const
 {
-    return ::malloc(size);
+    return tc_malloc(size);
 }
 
 void GData::freeBuffer(void* p) const
 {
-    ::free(p);
+    return tc_free(p);
 }
 
 GData::FieldNameType GData::allocName(const char* szKey) const

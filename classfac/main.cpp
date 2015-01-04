@@ -27,6 +27,9 @@ class TestClassB : public TestClass
 IMPLEMENT_GDYNAMIC_CLASS(TestClassB, TestClass)
 
 
+DWORD g_t1 = 0;
+DWORD g_t2 = 0;
+
 int main()
 {
     GAutoreleasePool * atp = (GAutoreleasePool*)GAutoreleasePool::createObject();
@@ -36,17 +39,28 @@ int main()
 	t->print();
     t->autorelease();
 
-    GData* pdata = (GData*)GClassInfo::createObject("GData");
-    pdata->setBool("b", true);
-    pdata->setInt("i", 1983);
+    GData* pdata = (GData*)GData::createObject();
 
-    bool b = pdata->getBool("b3");
-    int i = pdata->getInt("i2");
+    DWORD dw = GetTickCount();
+    for (int i = 0; i < 1000000; i++)
+    {
+        pdata->setBool("b123456789", true);
+        pdata->delField("b123456789");
+    }
+    g_t1 = GetTickCount() - dw;
 
-    pdata->delField("b");
+    pdata->setBool("b3123456789", TRUE);
+    pdata->setInt("i2123456789", 100);
+
+    for (int i = 0; i < 1000000; i++)
+    {
+        bool b = pdata->getBool("b3123456789");
+        int k = pdata->getInt("i2123456789");
+    }
+
+    g_t2 = GetTickCount() - dw;
 
     pdata->release();
-
     atp->release();
 
 	return 0;
