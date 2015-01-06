@@ -51,7 +51,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>__GEXPORT;WIN32;_DEBUG;_WINDOWS;_USRDLL;JUNGLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\include\jungle;..\..\include\thirdparty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include\jungle;..\..\include\thirdparty;..\..\source</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -78,12 +78,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\jungle\gevent.h" />
     <ClInclude Include="..\..\include\jungle\gatpool.h" />
     <ClInclude Include="..\..\include\jungle\gclassinfo.h" />
     <ClInclude Include="..\..\include\jungle\gdata.h" />
     <ClInclude Include="..\..\include\jungle\gobject.h" />
     <ClInclude Include="..\..\include\jungle\gtype.h" />
+    <ClInclude Include="..\..\include\jungle\gtypes.h" />
+    <ClInclude Include="..\..\include\jungle\guiobject.h" />
     <ClInclude Include="..\..\include\jungle\gview.h" />
+    <ClInclude Include="..\..\include\jungle\gwindow.h" />
+    <ClInclude Include="..\..\source\ui\container\container.h" />
+    <ClInclude Include="..\..\source\ui\container\windib.h" />
+    <ClInclude Include="..\..\source\ui\container\windowcontainer.h" />
+    <ClInclude Include="..\..\source\ui\container\winhdr.h" />
+    <ClInclude Include="..\..\source\ui\container\winupdate.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -100,7 +109,25 @@
     <ClCompile Include="..\..\source\jungle\gobject.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\source\ui\container\container.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\container\windib.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\container\windowcontainer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\container\winupdate.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\guiobject.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\source\ui\gview.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\window\gwindow.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="jungle.cpp" />

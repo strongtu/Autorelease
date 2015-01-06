@@ -25,6 +25,33 @@
     <ClInclude Include="..\..\include\jungle\gview.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\ui\container\windowcontainer.h">
+      <Filter>ui\container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ui\container\winupdate.h">
+      <Filter>ui\container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ui\container\winhdr.h">
+      <Filter>ui\container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ui\container\windib.h">
+      <Filter>ui\container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ui\container\container.h">
+      <Filter>ui\container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gtypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\guiobject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gwindow.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gevent.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jungle.cpp">
@@ -48,6 +75,24 @@
     <ClCompile Include="..\..\source\jungle\gatpool.cpp">
       <Filter>jungle</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\ui\container\windowcontainer.cpp">
+      <Filter>ui\container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\container\winupdate.cpp">
+      <Filter>ui\container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\container\windib.cpp">
+      <Filter>ui\container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\container\container.cpp">
+      <Filter>ui\container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\guiobject.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\window\gwindow.cpp">
+      <Filter>ui\control\window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphic">
@@ -64,6 +109,30 @@
     </Filter>
     <Filter Include="ui">
       <UniqueIdentifier>{13b231fb-209a-42ec-9534-a73f407e9cff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\container">
+      <UniqueIdentifier>{8fed034a-cd9a-4fd6-a4e8-8558f726964e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\control">
+      <UniqueIdentifier>{6b2e2310-ba94-4ba9-9459-38457a4ce382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{f762b65c-d40d-46a3-8a2c-086a687a8645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\control\window">
+      <UniqueIdentifier>{5c0c2c4b-515c-4625-b868-c15321e32491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\control\button">
+      <UniqueIdentifier>{23e23768-0c21-47c5-af2a-2e5c5a2512c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\control\checkbox">
+      <UniqueIdentifier>{0729fc08-4999-4f6f-8d7c-b8488c32ac9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\builder">
+      <UniqueIdentifier>{43bb32f4-034e-4e5c-a083-aa39fb882981}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io">
+      <UniqueIdentifier>{cfe6c139-efb1-4340-a4bf-a8c9ba25bffc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

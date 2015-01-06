@@ -71,6 +71,29 @@ typedef unsigned long long uint64;
 #define lo_byte(w)          ((byte)((uint)(w) & 0xff))
 #define hi_byte(w)          ((byte)((uint)(w) >> 8))
 
+typedef struct gPoint
+{
+    int x;
+    int y;
+} gPoint;
+
+typedef struct gSize
+{
+    int cx;
+    int cy;
+} gSize;
+
+typedef struct gRect
+{
+    int left;
+    int top;
+    int right;
+    int bottom;
+} gRect;
+
+typedef void* HGCANVAS;
+typedef void* HGBITMAP;
+
 #ifdef __cplusplus
 }
 #endif/*__cplusplus*/
