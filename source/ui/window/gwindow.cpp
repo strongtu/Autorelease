@@ -1,13 +1,13 @@
-﻿#include "gwindow.h"
+﻿#include "stdafx.h"
+#include "gwindow.h"
 #include "ui/container/windowcontainer.h"
 
 IMPLEMENT_GDYNAMIC_CLASS(GWindow, GView)
 
-GWindow::GWindow() :
-    m_bMainWindow(false),
-    m_szMax(-1, -1),
-    m_szMin(-1, -1),
-    m_pContainer(nullptr)
+GWindow::GWindow() 
+: m_szMax(-1, -1)
+, m_szMin(-1, -1)
+, m_pContainer(nullptr)
 {
 }
 
@@ -15,12 +15,9 @@ GWindow::~GWindow()
 {
 }
 
-void GWindow::SetCaption(const char* szCaption)
+void GWindow::setCaption(const char* szCaption)
 {
-    if (!szCaption)
-    {
-        return;
-    }
+    if (!szCaption) return;
 
     Container* p = GetContainer();
     if (p)
@@ -29,7 +26,7 @@ void GWindow::SetCaption(const char* szCaption)
     }
 }
 
-void GWindow::SetBorder(const GRect& border)
+void GWindow::setBorder(const GRect& border)
 {
     Container* p = GetContainer();
     if (p)
@@ -38,7 +35,7 @@ void GWindow::SetBorder(const GRect& border)
     }
 }
 
-void GWindow::SetMaxSize(const GSize& size)
+void GWindow::setMaxSize(const GSize& size)
 {
     Container* p = GetContainer();
     if (p)
@@ -47,7 +44,7 @@ void GWindow::SetMaxSize(const GSize& size)
     }
 }
 
-void GWindow::SetMinSize(const GSize& size)
+void GWindow::setMinSize(const GSize& size)
 {
     Container* p = GetContainer();
     if (p)
@@ -56,7 +53,25 @@ void GWindow::SetMinSize(const GSize& size)
     }
 }
 
-bool GWindow::IsTopMost()
+void GWindow::closeWindow()
+{
+    Container* p = GetContainer();
+    if (p)
+    {
+        p->DestroyContainer();
+    }
+}
+
+void GWindow::setForegroundWindow()
+{
+    Container* p = GetContainer();
+    if (p)
+    {
+        p->SetForegroundWindow();
+    }
+}
+
+bool GWindow::isTopMost()
 {
     Container* p = GetContainer();
     if (!p) return false;
@@ -64,11 +79,11 @@ bool GWindow::IsTopMost()
     return p->IsTopMost();
 }
 
-void GWindow::SetTopMost(bool bTopMost)
+void GWindow::setTopMost(bool bTopMost)
 {
     Container* p = GetContainer();
     if (!p) return;
-    if (IsTopMost() == bTopMost)
+    if (isTopMost() == bTopMost)
     {
         return;
     }
@@ -84,120 +99,19 @@ void GWindow::SetTopMost(bool bTopMost)
     }
 }
 
-void GWindow::ShowWindow()
+void GWindow::setVisible(bool bVisible)
 {
+    GView::setVisible(bVisible);
+
     Container* p = GetContainer();
-    if (p)
+    if (!p) return;
+    if (bVisible)
     {
         p->Show();
     }
-}
-
-void GWindow::HideWindow()
-{
-    Container* p = GetContainer();
-    if (p)
-    {
-        p->Hide();
-    }
-}
-
-void GWindow::CloseWindow()
-{
-    Container* p = GetContainer();
-    if (p)
-    {
-        p->DestroyContainer();
-    }
-}
-
-void GWindow::SetForegroundWindow()
-{
-    Container* p = GetContainer();
-    if (p)
-    {
-        p->SetForegroundWindow();
-    }
-}
-
-void GWindow::Move(const GPoint& ptSrc, const GPoint& ptDst)
-{
-    Container* p = GetContainer();
-    if (p)
-    {
-        p->SetPos(ptDst);
-    }
-}
-
-void GWindow::Resize(const GSize& szOld, const GSize& szNew)
-{
-    Container* p = GetContainer();
-    if (p)
-    {
-        GSize szWin = szNew;
-        if (m_szMin.cx >= 0 && szNew.cx < m_szMin.cx)
-        {
-            szWin.cx = m_szMin.cx;
-        }
-        if (m_szMin.cy >= 0 && szNew.cy < m_szMin.cy)
-        {
-            szWin.cy = m_szMin.cy;
-        }
-        if (m_szMax.cx >= 0 && szNew.cx > m_szMax.cx)
-        {
-            szWin.cx = m_szMax.cx;
-        }
-        if (m_szMax.cy >= 0 && szNew.cy > m_szMax.cy)
-        {
-            szWin.cy = m_szMax.cy;
-        }
-        p->SetSize(szWin);
-    }
-}
-
-void GWindow::OnVisibleChangeEvent(const GUIObject* sender)
-{
-    bool bVisible = sender->isVisible();
-    if (bVisible)
-    {
-        ShowWindow();
-    }
     else
     {
-        HideWindow();
-    }
-}
-
-void GWindow::OnEnableChangeEvent(const GUIObject* sender)
-{
-    bool bEnable = sender->isEnable();
-}
-
-void GWindow::OnCloseClick(const GUIObject* sender, const GPoint& pt, uint button, uint keyState, uint clickTimes)
-{
-    CloseWindow();
-}
-
-void GWindow::OnFinalMessage(const Container* sender)
-{
-    if (sender == m_pContainer)
-    {
-        m_pContainer->Bind(nullptr);
-        m_pContainer->release();
-        m_pContainer = nullptr;
-
-        if (m_bMainWindow)
-        {
-            PostQuitMessage(0);
-        }
-    }
-}
-
-void GWindow::OnContainerActivate(const Container* sender, bool bActivate)
-{
-    if (sender == m_pContainer)
-    {
-
+        p->Hide();
     }
 }
 
@@ -211,11 +125,9 @@ Container* GWindow::GetContainer()
     m_pContainer = new WindowContainer();
 
     GRect rc(0, 0, 0, 0);
-    this->GetRect(rc);
+    this->getRect(rc);
 
     m_pContainer->CreateContainer(rc);
-    m_pContainer->OnActivateEvent += EventObject<OnStateEventFunc>(this, &GWindow::OnContainerActivate);
-
     m_pContainer->Bind(this);
 
     return m_pContainer;

@@ -48,20 +48,20 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 {
     GWindow *pWindow = (GWindow*)GWindow::createObject();
 
-    pWindow->SetPos(GPoint(10, 10));
-    pWindow->SetSize(GSize(800, 600));
-    pWindow->SetBorder(GRect(10,10,10,10));
+    pWindow->setPos(GPoint(10, 10));
+    pWindow->setSize(GSize(800, 600));
+    pWindow->setBorder(GRect(10,10,10,10));
 
     GView * pView = (GView*)GView::createObject();
-    pView->SetSize(GSize(50,50));
-    pView->SetPos(GPoint(100,100));
+    pView->setSize(GSize(50,50));
+    pView->setPos(GPoint(100,100));
     pWindow->addChild(pView);
 
     GView * pView2 = (GView*)GView::createObject();
-    pView2->SetPos(GPoint(400, 100));
-    pView2->SetSize(GSize(100, 100));
+    pView2->setPos(GPoint(400, 100));
+    pView2->setSize(GSize(100, 100));
     pWindow->addChild(pView2);
-    pWindow->ShowWindow();
+    pWindow->setVisible(true);
 
     MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))

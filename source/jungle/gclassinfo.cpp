@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "gclassinfo.h"  
       
 GClassInfo::ClassTable* GClassInfo::_classTable = NULL;  

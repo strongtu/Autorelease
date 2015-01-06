@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guiobject.h"
 
 IMPLEMENT_GDYNAMIC_CLASS(GUIObject, GObject)
@@ -67,12 +68,12 @@ bool GUIObject::isVisible() const
     return m_bVisible;
 }
 
-void GUIObject::GetPos(GPoint& pt) const
+void GUIObject::getPos(GPoint& pt) const
 {
     pt = m_pos;
 }
 
-void GUIObject::SetPos(const GPoint& pt)
+void GUIObject::setPos(const GPoint& pt)
 {
     if (pt != m_pos)
     {
@@ -82,12 +83,12 @@ void GUIObject::SetPos(const GPoint& pt)
     }
 }
 
-void GUIObject::GetSize(GSize& size) const
+void GUIObject::getSize(GSize& size) const
 {
     size = m_size;
 }
 
-void GUIObject::SetSize(const GSize& size)
+void GUIObject::setSize(const GSize& size)
 {
     if (size != m_size)
     {
@@ -97,14 +98,14 @@ void GUIObject::SetSize(const GSize& size)
     }
 }
 
-void GUIObject::Update(const GRect* rc)
-{
-
-}
-
-void GUIObject::GetRect(GRect& rect) const
+void GUIObject::getRect(GRect& rect) const
 {
     rect.SetRect(m_pos, m_pos + m_size);
+}
+
+void GUIObject::update(const GRect* rc)
+{
+
 }
 
 void GUIObject::onClick(const GPoint& pt, uint button, uint keyState, uint clickTimes, bool& bHandled)
@@ -114,13 +115,13 @@ void GUIObject::onClick(const GPoint& pt, uint button, uint keyState, uint click
 void GUIObject::onMouseDown(const GPoint& pt, uint button, uint keyState, bool& bHandled)   
 {
     m_bMouseDown = true;
-    Update();
+    update();
 }
 
 void GUIObject::onMouseUp(const GPoint& pt, uint button, uint keyState, bool& bHandled)
 {
     m_bMouseDown = false;
-    Update();
+    update();
 }
 
 void GUIObject::onMouseMove(const GPoint& pt, uint keyState, bool& bHandled)
@@ -134,13 +135,13 @@ void GUIObject::onMouseHover()
 void GUIObject::onMouseEnter()
 {
     m_bEnter = true;
-    Update();
+    update();
 }
 
 void GUIObject::onMouseLeave()
 {
     m_bEnter = false;
-    Update();
+    update();
 }
 
 void GUIObject::onMouseWheel(const GPoint& pt, uint keyState, int16 zDelta, bool& bHandled)
@@ -172,8 +173,6 @@ void GUIObject::onVisibleChange()
 void GUIObject::onEnableChange()
 {
 }
-
-#include <Windows.h>
 
 void GUIObject::onPaint(HGCANVAS hCanvas)
 {

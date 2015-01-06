@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "gview.h"
 
 IMPLEMENT_GDYNAMIC_CLASS(GView, GUIObject)
@@ -158,7 +159,7 @@ void GView::setFocusObject(GView* obj)
     m_pObjFocus = obj;
 }
 
-void GView::Update(const GRect* rc)
+void GView::update(const GRect* rc)
 {
     GRect rcUpdate(0, 0, m_size.cx, m_size.cy);
     if (rc) rcUpdate.IntersectRect(&rcUpdate, rc);
@@ -167,7 +168,7 @@ void GView::Update(const GRect* rc)
     if (m_pParent)
     {
         rcUpdate += m_pos;
-        m_pParent->Update(&rcUpdate);
+        m_pParent->update(&rcUpdate);
     }
     else
     {

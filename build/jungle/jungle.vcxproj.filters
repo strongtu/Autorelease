@@ -52,6 +52,9 @@
     <ClInclude Include="..\..\include\jungle\gevent.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gbutton.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jungle.cpp">
@@ -93,6 +96,9 @@
     <ClCompile Include="..\..\source\ui\window\gwindow.cpp">
       <Filter>ui\control\window</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\ui\button\gbutton.cpp">
+      <Filter>ui\control\button</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphic">
@@ -125,14 +131,17 @@
     <Filter Include="ui\control\button">
       <UniqueIdentifier>{23e23768-0c21-47c5-af2a-2e5c5a2512c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ui\control\checkbox">
-      <UniqueIdentifier>{0729fc08-4999-4f6f-8d7c-b8488c32ac9c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ui\builder">
       <UniqueIdentifier>{43bb32f4-034e-4e5c-a083-aa39fb882981}</UniqueIdentifier>
     </Filter>
     <Filter Include="io">
       <UniqueIdentifier>{cfe6c139-efb1-4340-a4bf-a8c9ba25bffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\layout">
+      <UniqueIdentifier>{c5eca077-8b40-442f-9182-668c3698ad20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\layout\stackpanel">
+      <UniqueIdentifier>{a690b678-0273-44ec-ab1a-9bbe37d9ac76}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,16 +1,13 @@
-﻿#include "./container.h"
+﻿#include "stdafx.h"
+#include "./container.h"
 
 #include <windows.h>
 
-Container::Container(void) :
-    m_pView(nullptr),
-    m_pObjMouseIn(nullptr),
-    m_pObjMouseDown(nullptr),
-    m_pObjFocus(nullptr),
-    m_uLastClickTime(0),
-    m_uLastClickTimes(0),
-    m_ptLastClickPos(0, 0),
-    m_uLastButton(0)
+Container::Container(void)
+: m_pView(nullptr)
+, m_pObjMouseIn(nullptr)
+, m_pObjMouseDown(nullptr)
+, m_pObjFocus(nullptr)
 {
 }
 
@@ -52,6 +49,7 @@ void Container::ListenViewEvent()
     {
         m_pView->OnChange += EventObject<OnChangeEventFunc>(this, &Container::onViewChange);
         m_pView->OnResize += EventObject<OnResizeEventFunc>(this, &Container::onViewResize);
+        m_pView->OnMove += EventObject<OnMoveEventFunc>(this, &Container::onViewMove);
     }
 }
 
@@ -61,6 +59,7 @@ void Container::UnlistenViewEvent()
     {
         m_pView->OnChange -= EventObject<OnChangeEventFunc>(this, &Container::onViewChange);
         m_pView->OnResize -= EventObject<OnResizeEventFunc>(this, &Container::onViewResize);
+        m_pView->OnMove -= EventObject<OnMoveEventFunc>(this, &Container::onViewMove);
     }
 }
 
@@ -73,41 +72,18 @@ void Container::onViewResize(const GUIObject* sender, const GSize& szOld, const 
 {
     SyncRect();
     GRect rcView;
-    m_pView->GetRect(rcView);
+    m_pView->getRect(rcView);
     Update(rcView);
+}
+
+void Container::onViewMove(const GUIObject* sender, const GPoint& ptSrc, const GPoint& ptDst)
+{
+    SyncRect();
 }
 
 bool Container::CheckView()
 {
     return (m_pView && m_pView->isEnable() && m_pView->isVisible());
-}
-
-void Container::onClick(const GPoint& pt, uint button, uint keyState, bool& bHandled)
-{
-    if (!CheckView()) return;
-
-    GView* pObj = m_pView->childHitTest(pt);
-    if (pObj && (pObj == m_pObjMouseDown))
-    {
-        m_pObjMouseDown = nullptr;
-
-        uint32 uLastClickTime = m_uLastClickTime;
-        m_uLastClickTime = ::GetTickCount();
-        if (m_uLastClickTime - uLastClickTime < ::GetDoubleClickTime() 
-            && m_ptLastClickPos == pt && m_uLastButton == button)
-            m_uLastClickTimes++;
-        else
-            m_uLastClickTimes = 1;
-        m_uLastButton = button;
-        m_ptLastClickPos = pt;
-        m_pView->onClick(pt, button, keyState, m_uLastClickTimes, bHandled);
-    }
-    else
-    {
-        m_uLastClickTime = 0;
-        m_uLastClickTimes = 0;
-        m_ptLastClickPos.SetPoint(0, 0);
-    }
 }
 
 void Container::onMouseDown(const GPoint& pt, uint button, uint keyState, bool& bHandled)
@@ -146,8 +122,15 @@ void Container::onMouseUp(const GPoint& pt, uint button, uint keyState, bool& bH
     if (m_pObjMouseDown)
     {
         m_pObjMouseDown->onMouseUp(pt, button, keyState, bHandled);
-        m_pObjMouseDown = nullptr;
     }
+
+    // 模拟click事件
+    if (pView && pView == m_pObjMouseDown)
+    {
+        m_pObjMouseDown->onClick(pt, button, keyState, 0, bHandled);
+    }
+
+    m_pObjMouseDown = nullptr;
 }
 
 void Container::onMouseMove(const GPoint& pt, uint keyState, bool& bHandled)
@@ -250,7 +233,7 @@ void Container::onPaint(HGCANVAS hCanvas, const GRect& rcRender)
             ::GetWindowOrgEx(hdc, &ptViewport);
 
             GPoint pos;
-            child->GetPos(pos);
+            child->getPos(pos);
             POINT ptViewportNew = {ptViewport.x - pos.x, ptViewport.y - pos.y};
             ::SetWindowOrgEx(hdc, ptViewportNew.x, ptViewportNew.y, NULL);
 

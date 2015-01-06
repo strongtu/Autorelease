@@ -1,4 +1,5 @@
-﻿#include "./windowcontainer.h"
+﻿#include "stdafx.h"
+#include "./windowcontainer.h"
 
 WindowContainer::WindowContainer(void) :
     m_hCanvas(0),
@@ -151,19 +152,22 @@ void WindowContainer::OnDestroy()
 void WindowContainer::OnPaint(CDCHandle dc)
 {
     CPaintDC dcPaint(m_hWnd);
+    if (!m_pView) return;
+
     GRect rcClient;
     GetRect(rcClient);
     rcClient.MoveToXY(0, 0);
     m_rcUpdate.IntersectRect(m_rcUpdate, rcClient);
 
-    RECT rcClient2 = {rcClient.left, rcClient.top, rcClient.right, rcClient.bottom};
-    dcPaint.FillRect(&rcClient2, 0);
-
-    onPaint((HGCANVAS)(HDC)dcPaint, m_rcUpdate);
     if (!m_rcUpdate.IsRectEmpty())
     {
-        RECT rc = {m_rcUpdate.left, m_rcUpdate.top, m_rcUpdate.right, m_rcUpdate.bottom};
-        GUpdateWindow::GetInstance().Update(m_hWnd, 0, m_dib, &rc, 0xFF);
+        RECT rcClient2 = {m_rcUpdate.left, m_rcUpdate.top, m_rcUpdate.right, m_rcUpdate.bottom};
+        dcPaint.FillRect(&rcClient2, 0);
+
+        onPaint((HGCANVAS)(HDC)dcPaint, m_rcUpdate);
+
+        //RECT rc = {m_rcUpdate.left, m_rcUpdate.top, m_rcUpdate.right, m_rcUpdate.bottom};
+        //GUpdateWindow::GetInstance().Update(m_hWnd, 0, m_dib, &rc, 0xFF);
     }
     m_rcUpdate.SetRectEmpty();
 }
@@ -179,10 +183,10 @@ void WindowContainer::OnSize(UINT nType, CSize size)
     {
         GSize szViewNew(size.cx, size.cy);
         GSize szView;
-        m_pView->GetSize(szView);
+        m_pView->getSize(szView);
         if (szViewNew != szView)
         {
-            m_pView->SetSize(szViewNew);
+            m_pView->setSize(szViewNew);
         }
     }
     RebuildCanvas(size.cx, size.cy);
@@ -195,7 +199,7 @@ void WindowContainer::OnMove(CPoint ptPos)
 {
     if (m_pView)
     {
-        m_pView->SetPos(GPoint(ptPos.x, ptPos.y));
+        m_pView->setPos(GPoint(ptPos.x, ptPos.y));
     }
 }
 
@@ -218,17 +222,16 @@ void WindowContainer::OnMouseMove(UINT nFlags, CPoint point)
     bool bHandled = false;
     GPoint pt(point.x, point.y);
     onMouseMove(pt, (uint)nFlags, bHandled);
-    UpdateWindow();
-
-    GRect rcWin;
-    GetRect(rcWin);
-    rcWin.MoveToXY(0, 0);
 
     if (m_border.IsRectNull())
     {
         m_hCursor = NULL;
         return;
     }
+
+    GRect rcWin;
+    GetRect(rcWin);
+    rcWin.MoveToXY(0, 0);
 
     GRect rcTop(rcWin.left, rcWin.top, rcWin.right, rcWin.top + m_border.top);
     GRect rcBottom(rcWin.left, rcWin.bottom - m_border.bottom, rcWin.right, rcWin.bottom);
@@ -297,20 +300,19 @@ void WindowContainer::OnLButtonDown(UINT nFlags, CPoint point)
     {
         return;
     }
-    GPoint pt(point.x, point.y);
-    GView* pObjMouseDown = m_pView->childHitTest(pt);
-    if (pObjMouseDown != m_pView)
+
+    if (GetCapture() != m_hWnd)
     {
-        if (GetCapture() != m_hWnd)
-        {
-            SetCapture();
-        }
-        bool bHandled = false;
-        onMouseDown(pt, GUIObject::MB_L, (uint)nFlags, bHandled);
+        SetCapture();
     }
-    else
+
+    GPoint pt(point.x, point.y);
+    bool bHandled = false;
+    onMouseDown(pt, GUIObject::MB_L, (uint)nFlags, bHandled);
+
+    if (!bHandled)
     {
-        ReleaseCapture();
+//        ReleaseCapture();
 
         GRect rcWin;
         GetRect(rcWin);
@@ -382,7 +384,6 @@ void WindowContainer::OnLButtonUp(UINT nFlags, CPoint point)
     GPoint pt(point.x, point.y);
     bool bHandled = false;
     onMouseUp(pt, GUIObject::MB_L, (uint)nFlags, bHandled);
-    onClick(pt, GUIObject::MB_L, (uint)nFlags, bHandled);
 }
 
 void WindowContainer::OnRButtonDown(UINT nFlags, CPoint point)
@@ -407,7 +408,6 @@ void WindowContainer::OnRButtonUp(UINT nFlags, CPoint point)
     GPoint pt(point.x, point.y);
     bool bHandled = false;
     onMouseUp(pt, GUIObject::MB_R, (uint)nFlags, bHandled);
-    onClick(pt, GUIObject::MB_R, (uint)nFlags, bHandled);
 }
 
 void WindowContainer::OnMButtonDown(UINT nFlags, CPoint point)
@@ -432,7 +432,6 @@ void WindowContainer::OnMButtonUp(UINT nFlags, CPoint point)
     GPoint pt(point.x, point.y);
     bool bHandled = false;
     onMouseUp(pt, GUIObject::MB_M, (uint)nFlags, bHandled);
-    onClick(pt, GUIObject::MB_M, (uint)nFlags, bHandled);
 }
 
 void WindowContainer::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -474,14 +473,7 @@ BOOL WindowContainer::OnNcActivate(BOOL bActive)
 
 void WindowContainer::OnActivate(UINT uState, BOOL bMinimized, HWND hWnd)
 {
-    if (uState == WA_INACTIVE)
-    {
-        DoActivate(false);
-    }
-    else
-    {
-        DoActivate(true);
-    }
+    onActivate(uState == WA_INACTIVE ? false : true);
 }
 
 BOOL WindowContainer::OnSetCursor(CWindow wnd, UINT nHitTest, UINT message)
@@ -523,7 +515,6 @@ void WindowContainer::OnGetMinMaxInfo(LPMINMAXINFO lpMMI)
 
 void WindowContainer::OnClose()
 {
-    DoClose();
     SetMsgHandled(m_bCloseWindow ? FALSE : TRUE);
 }
 
@@ -574,13 +565,11 @@ void WindowContainer::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 
 void WindowContainer::OnEnterSizeMove()
 {
-//    GFireEvent(OnNotifyEventFunc, OnDragStartEvent, (this));
     SetMsgHandled(FALSE);
 }
 
 void WindowContainer::OnExitSizeMove()
 {
- //   GFireEvent(OnNotifyEventFunc, OnDragEndEvent, (this));
     SetMsgHandled(FALSE);
 }
 
@@ -595,13 +584,12 @@ LRESULT WindowContainer::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
  
         }
     }
-    bHandled = FALSE;
     return lRes;
 }
 
 void WindowContainer::OnFinalMessage(HWND hWnd)
 {
-    DoFinalMessage();
+
 }
 
 void WindowContainer::Hide()
@@ -628,14 +616,6 @@ void WindowContainer::Show()
     }
 }
 
-void WindowContainer::SetRect(const GRect& rect)
-{
-    if (IsWindow())
-    {
-        SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING);
-    }
-}
-
 void WindowContainer::GetRect(GRect& rect) const
 {
     if (IsWindow())
@@ -643,42 +623,6 @@ void WindowContainer::GetRect(GRect& rect) const
         CRect rcWin;
         GetWindowRect(&rcWin);
         rect.SetRect(rcWin.left, rcWin.top, rcWin.right, rcWin.bottom);
-    }
-}
-
-void WindowContainer::SetPos(const GPoint& pt)
-{
-    if (IsWindow())
-    {
-        SetWindowPos(nullptr, pt.x, pt.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING);
-    }
-}
-
-void WindowContainer::GetPos(GPoint& pt) const
-{
-    if (IsWindow())
-    {
-        CRect rcWin;
-        GetWindowRect(&rcWin);
-        pt.SetPoint(rcWin.left, rcWin.top);
-    }
-}
-
-void WindowContainer::SetSize(const GSize& sz)
-{
-    if (IsWindow())
-    {
-        SetWindowPos(nullptr, 0, 0, sz.cx, sz.cy, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING);
-    }
-}
-
-void WindowContainer::GetSize(GSize &sz) const
-{
-    if (IsWindow())
-    {
-        CRect rcWin;
-        GetWindowRect(&rcWin);
-        sz.SetSize(rcWin.Width(), rcWin.Height());
     }
 }
 
@@ -694,7 +638,7 @@ void WindowContainer::SyncRect()
     if (IsWindow() && m_pView)
     {
         GRect rcView;
-        m_pView->GetRect(rcView);
+        m_pView->getRect(rcView);
         CRect rcWin;
         GetWindowRect(&rcWin);
         if (rcView != GRect(rcWin.left, rcWin.top, rcWin.right, rcWin.bottom))
@@ -728,9 +672,8 @@ void WindowContainer::RebuildCanvas(int cx, int cy)
     m_dib.Rebuild(x, y);
 }
 
-void WindowContainer::DoActivate(bool bActivate)
+void WindowContainer::onActivate(bool bActivate)
 {
-    GFireEvent(OnStateEventFunc, OnActivateEvent, (this, bActivate));
     if (m_pView)
     {
         if (bActivate == false)
@@ -746,12 +689,3 @@ void WindowContainer::DoActivate(bool bActivate)
     }
 }
 
-void WindowContainer::DoFinalMessage()
-{
-//    GFireEvent(OnNotifyEventFunc, OnFinalMessageEvent, (this));
-}
-
-void WindowContainer::DoClose()
-{
-//    GFireEvent(OnNotifyEventFunc, OnCloseEvent, (this));
-}

@@ -1,4 +1,5 @@
-﻿#include "./windib.h"
+﻿#include "stdafx.h"
+#include "./windib.h"
 
 DIB::DIB(void) : m_hDC(nullptr),
     m_hDIB(nullptr),

@@ -3,10 +3,7 @@
 
 #include "gview.h"
 #include "gtypes.h"
-#include "event.h"
-
-class Container;
-typedef void (Delegater::*OnStateEventFunc)(const Container* sender, bool bState);
+#include "gevent.h"
 
 class Container : public GObject
 {
@@ -20,12 +17,6 @@ public:
     virtual void* GetHost() = 0;
     virtual void Hide() = 0;
     virtual void Show() = 0;
-    virtual void SetRect(const GRect& rect) = 0;
-    virtual void GetRect(GRect& rect) const = 0;
-    virtual void SetPos(const GPoint& pt) = 0;
-    virtual void GetPos(GPoint& pt) const = 0;
-    virtual void SetSize(const GSize& sz) = 0;
-    virtual void GetSize(GSize& sz) const = 0;
     virtual void SetCaption(const char* szCaption) = 0;
     virtual void SetBorder(const GRect& border) = 0;
     virtual void SetMaxSize(const GSize& size) = 0;
@@ -34,13 +25,17 @@ public:
     virtual void SetTopMost(bool bTopMost) = 0;
     virtual bool IsTopMost() = 0;
     virtual void SetForegroundWindow() = 0;
+
 protected:
     void ListenViewEvent();
     void UnlistenViewEvent();
-protected:
+
     void onViewChange(const GUIObject* sender, const GRect& rect);
     void onViewResize(const GUIObject* sender, const GSize& szOld, const GSize& szNew);
+    void onViewMove(const GUIObject* sender, const GPoint& ptSrc, const GPoint& ptDst);
+
     bool CheckView();
+
 protected:
     virtual void Update(const GRect& rect) = 0;
     virtual void SyncRect() = 0;
@@ -57,18 +52,11 @@ protected:
     void onKeyUp(uint nChar, uint nRepCnt, uint nFlags);
     void onPaint(HGCANVAS hCanvas, const GRect& rcRender);
 
-public:
-    EventSource<OnStateEventFunc> OnActivateEvent;
-
 protected:
     GView*  m_pView;
     GView*  m_pObjMouseIn;
     GView*  m_pObjMouseDown;
     GView*  m_pObjFocus;
-    uint32  m_uLastClickTime;
-    uint32  m_uLastClickTimes;
-    GPoint  m_ptLastClickPos;
-    uint    m_uLastButton;
 };
 
 #endif /*__CONTAINER_H__*/

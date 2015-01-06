@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "gobject.h"
 #include "gatpool.h"
 

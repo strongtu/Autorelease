@@ -1,4 +1,5 @@
-﻿#include "./winupdate.h"
+﻿#include "stdafx.h"
+#include "./winupdate.h"
 
 GUpdateWindow::GUpdateWindow()
 {

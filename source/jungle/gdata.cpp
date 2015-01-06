@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "gdata.h"
 #include "tcmalloc\tcmalloc.h"
 

@@ -18,12 +18,7 @@ public:
     virtual void* GetHost();
     virtual void Hide();
     virtual void Show();
-    virtual void SetRect(const GRect& rect);
     virtual void GetRect(GRect& rect) const;
-    virtual void SetPos(const GPoint& pt);
-    virtual void GetPos(GPoint& pt) const;
-    virtual void SetSize(const GSize& sz);
-    virtual void GetSize(GSize& sz) const;
     virtual void SetCaption(const char* szCaption);
     virtual void SetBorder(const GRect& border);
     virtual void SetMaxSize(const GSize& size);
@@ -124,9 +119,8 @@ protected:
     virtual void SyncRect();
     void RebuildCanvas(int cx, int cy);
 protected:
-    void DoActivate(bool bActivate);
-    void DoFinalMessage();
-    void DoClose();
+    void onActivate(bool bActivate);
+
 protected:
     HGCANVAS m_hCanvas;
     HGBITMAP m_hBitmap;

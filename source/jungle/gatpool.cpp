@@ -1,4 +1,4 @@
-#include <Windows.h>
+#include "stdafx.h"
 #include "gatpool.h"
 
 IMPLEMENT_GDYNAMIC_CLASS(GAutoreleasePool, GObject)
