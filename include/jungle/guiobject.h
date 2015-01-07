@@ -6,8 +6,9 @@
 #include "gevent.h"
 
 class GUIObject;
-/*
+
 typedef void (Delegater::*OnClickEventFunc)(const GUIObject* sender, const GPoint& pt, uint button, uint keyState, uint clickTimes);
+/*
 typedef void (Delegater::*OnMouseEventFunc)(const GUIObject* sender, const GPoint& pt, uint button, uint keyState);
 typedef void (Delegater::*OnMouseMoveEventFunc)(const GUIObject* sender, const GPoint& pt, uint keyState);
 typedef void (Delegater::*OnMouseWheelEventFunc)(const GUIObject* sender, const GPoint& pt, uint keyState, int16 zDelta);
@@ -50,21 +51,20 @@ public:
 
     virtual void update(const GRect* rc = NULL);
 
-    void onClick(const GPoint& pt, uint button, uint keyState, uint clickTimes, bool& bHandled);
-    void onMouseDown(const GPoint& pt, uint button, uint keyState, bool& bHandled);
-    void onMouseUp(const GPoint& pt, uint button, uint keyState, bool& bHandled);
-    void onMouseMove(const GPoint& pt, uint keyState, bool& bHandled);
-    void onMouseHover();
-    void onMouseEnter();
-    void onMouseLeave();
-    void onMouseWheel(const GPoint& pt, uint keyState, int16 zDelta, bool& bHandled);
-    void onKeyDown(uint nChar, uint nRepCnt, uint nFlags);
-    void onKeyUp(uint nChar, uint nRepCnt, uint nFlags);
+    virtual void onClick(const GPoint& pt, uint button, uint keyState, uint clickTimes, bool& bHandled);
+    virtual void onMouseDown(const GPoint& pt, uint button, uint keyState, bool& bHandled);
+    virtual void onMouseUp(const GPoint& pt, uint button, uint keyState, bool& bHandled);
+    virtual void onMouseMove(const GPoint& pt, uint keyState, bool& bHandled);
+    virtual void onMouseEnter();
+    virtual void onMouseLeave();
+    virtual void onMouseWheel(const GPoint& pt, uint keyState, int16 zDelta, bool& bHandled);
+    virtual void onKeyDown(uint nChar, uint nRepCnt, uint nFlags);
+    virtual void onKeyUp(uint nChar, uint nRepCnt, uint nFlags);
 
-    void onMove(const GPoint& ptOld, const GPoint& ptNew);
-    void onResize(const GSize& szOld, const GSize& szNew);
+    virtual void onMove(const GPoint& ptOld, const GPoint& ptNew);
+    virtual void onResize(const GSize& szOld, const GSize& szNew);
 
-    void onPaint(HGCANVAS hCanvas);
+    virtual void onPaint(HGCANVAS hCanvas);
 
 protected:
     virtual void onVisibleChange();
@@ -74,6 +74,7 @@ public:
     EventSource<OnChangeEventFunc> OnChange;
     EventSource<OnResizeEventFunc> OnResize;
     EventSource<OnMoveEventFunc>   OnMove;
+    EventSource<OnClickEventFunc>  OnClick;
 
 protected:
     GPoint m_pos;
@@ -83,9 +84,6 @@ protected:
 
     bool m_bVisible;
     bool m_bEnable;
-
-    bool m_bEnter;
-    bool m_bMouseDown;
 };
 
 #endif

@@ -6,8 +6,6 @@ IMPLEMENT_GDYNAMIC_CLASS(GUIObject, GObject)
 GUIObject::GUIObject(void)
 : m_bVisible(true)
 , m_bEnable(true)
-, m_bEnter(false)
-, m_bMouseDown(false)
 {
 }
 
@@ -110,38 +108,31 @@ void GUIObject::update(const GRect* rc)
 
 void GUIObject::onClick(const GPoint& pt, uint button, uint keyState, uint clickTimes, bool& bHandled)
 {
+    GFireEvent(OnClickEventFunc, OnClick, (this, pt, button, keyState, clickTimes));
 }
 
 void GUIObject::onMouseDown(const GPoint& pt, uint button, uint keyState, bool& bHandled)   
 {
-    m_bMouseDown = true;
-    update();
+
 }
 
 void GUIObject::onMouseUp(const GPoint& pt, uint button, uint keyState, bool& bHandled)
 {
-    m_bMouseDown = false;
-    update();
+
 }
 
 void GUIObject::onMouseMove(const GPoint& pt, uint keyState, bool& bHandled)
 {
 }
 
-void GUIObject::onMouseHover()
-{
-}
-
 void GUIObject::onMouseEnter()
 {
-    m_bEnter = true;
-    update();
+
 }
 
 void GUIObject::onMouseLeave()
 {
-    m_bEnter = false;
-    update();
+
 }
 
 void GUIObject::onMouseWheel(const GPoint& pt, uint keyState, int16 zDelta, bool& bHandled)
@@ -178,16 +169,7 @@ void GUIObject::onPaint(HGCANVAS hCanvas)
 {
     HDC hdc = (HDC)hCanvas;
 
-    if (m_bMouseDown)
-    {
-        RECT rc = {0,0,m_size.cx,m_size.cy};
-        ::FillRect(hdc,&rc, (HBRUSH)::GetStockObject(WHITE_BRUSH));
-    }
-
-    if (m_bEnter)
-        ::SelectObject(hdc, ::GetStockObject(WHITE_PEN));
-    else
-        ::SelectObject(hdc, ::GetStockObject(BLACK_PEN));
+    ::SelectObject(hdc, ::GetStockObject(BLACK_PEN));
 
     ::MoveToEx(hdc, 0, 0, NULL);
     ::LineTo(hdc, m_size.cx, m_size.cy);

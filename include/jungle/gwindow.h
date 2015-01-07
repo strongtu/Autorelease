@@ -3,7 +3,9 @@
 
 #include "gview.h"
 
+
 class Container;
+class GSysButton;
 
 class GAPI GWindow : public GView
 {
@@ -26,12 +28,16 @@ public:
     virtual void setVisible(bool bVisible);
 
 protected:
+    void onButtonClick(const GUIObject* sender, const GPoint& pt, uint button, uint keyState, uint clickTimes);
+
     Container* GetContainer();
 
 protected:
     GSize m_szMax;
     GSize m_szMin;
     Container* m_pContainer;
+
+    GSysButton* m_pSysButton;
 };
 
 #endif /*__WINDOW_CONTROLLER_H__*/

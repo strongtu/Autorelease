@@ -52,6 +52,7 @@ protected:
     void onKeyUp(uint nChar, uint nRepCnt, uint nFlags);
     void onPaint(HGCANVAS hCanvas, const GRect& rcRender);
 
+    void routePaint(GView* pView, HGCANVAS hCanvas, const GRect& rcRender);
 protected:
     GView*  m_pView;
     GView*  m_pObjMouseIn;

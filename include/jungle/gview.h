@@ -27,7 +27,7 @@ public:
     GView* getFocusObject();
     void setFocusObject(GView* obj);
 
-    void update(const GRect* rc);
+    void update(const GRect* rc = nullptr);
 
 protected:
     // ½çÃæÊ÷

@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "gwindow.h"
 #include "ui/container/windowcontainer.h"
+#include "gsysbutton.h"
 
 IMPLEMENT_GDYNAMIC_CLASS(GWindow, GView)
 
@@ -9,6 +10,16 @@ GWindow::GWindow()
 , m_szMin(-1, -1)
 , m_pContainer(nullptr)
 {
+    m_pSysButton = (GSysButton*)GSysButton::createObject();
+    m_pSysButton->setSize(GSize(150, 50));
+    addChild(m_pSysButton);
+
+    GView* p = m_pSysButton->getChild("closebutton");
+    p->OnClick += EventObject<OnClickEventFunc>(this, &GWindow::onButtonClick);
+    p = m_pSysButton->getChild("minbutton");
+    p->OnClick += EventObject<OnClickEventFunc>(this, &GWindow::onButtonClick);
+    p = m_pSysButton->getChild("maxbutton");
+    p->OnClick += EventObject<OnClickEventFunc>(this, &GWindow::onButtonClick);
 }
 
 GWindow::~GWindow()
@@ -131,4 +142,9 @@ Container* GWindow::GetContainer()
     m_pContainer->Bind(this);
 
     return m_pContainer;
+}
+
+void GWindow::onButtonClick(const GUIObject* sender, const GPoint& pt, uint button, uint keyState, uint clickTimes)
+{
+
 }

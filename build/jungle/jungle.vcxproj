@@ -84,6 +84,8 @@
     <ClInclude Include="..\..\include\jungle\gclassinfo.h" />
     <ClInclude Include="..\..\include\jungle\gdata.h" />
     <ClInclude Include="..\..\include\jungle\gobject.h" />
+    <ClInclude Include="..\..\include\jungle\gstacklayout.h" />
+    <ClInclude Include="..\..\include\jungle\gsysbutton.h" />
     <ClInclude Include="..\..\include\jungle\gtype.h" />
     <ClInclude Include="..\..\include\jungle\gtypes.h" />
     <ClInclude Include="..\..\include\jungle\guiobject.h" />
@@ -129,9 +131,11 @@
     <ClCompile Include="..\..\source\ui\gview.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\source\ui\gstacklayout.cpp" />
     <ClCompile Include="..\..\source\ui\window\gwindow.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\source\ui\window\gsysbutton.cpp" />
     <ClCompile Include="jungle.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

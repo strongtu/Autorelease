@@ -312,7 +312,7 @@ void WindowContainer::OnLButtonDown(UINT nFlags, CPoint point)
 
     if (!bHandled)
     {
-//        ReleaseCapture();
+        ReleaseCapture();
 
         GRect rcWin;
         GetRect(rcWin);

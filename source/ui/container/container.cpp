@@ -221,11 +221,16 @@ void Container::onKeyUp(uint nChar, uint nRepCnt, uint nFlags)
 
 void Container::onPaint(HGCANVAS hCanvas, const GRect& rcRender)
 {
-    if (m_pView)
-    {
-        m_pView->onPaint(hCanvas);
+    routePaint(m_pView, hCanvas, rcRender);
+}
 
-        GView* child = m_pView->getFirstChild();
+void Container::routePaint(GView* pView, HGCANVAS hCanvas, const GRect& rcRender)
+{
+    if (pView)
+    {
+        pView->onPaint(hCanvas);
+
+        GView* child = pView->getFirstChild();
         while(child)
         {
             HDC hdc = (HDC)hCanvas;
@@ -238,6 +243,8 @@ void Container::onPaint(HGCANVAS hCanvas, const GRect& rcRender)
             ::SetWindowOrgEx(hdc, ptViewportNew.x, ptViewportNew.y, NULL);
 
             child->onPaint(hCanvas);
+
+            routePaint(child, hCanvas, rcRender);
 
             ::SetWindowOrgEx(hdc, ptViewport.x, ptViewport.y, NULL);
             child = child->getNext();

@@ -8,6 +8,7 @@
 #include "gatpool.h"
 #include "gdata.h"
 #include "gwindow.h"
+#include "gbutton.h"
 
 DWORD g_t1 = 0;
 DWORD g_t2 = 0;
@@ -57,7 +58,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     pView->setPos(GPoint(100,100));
     pWindow->addChild(pView);
 
-    GView * pView2 = (GView*)GView::createObject();
+    GView * pView2 = (GView*)GButton::createObject();
+    pView2->setId("test");
     pView2->setPos(GPoint(400, 100));
     pView2->setSize(GSize(100, 100));
     pWindow->addChild(pView2);

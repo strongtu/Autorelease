@@ -7,22 +7,7 @@
     <ClInclude Include="stdafx.h">
       <Filter>project</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\jungle\gdata.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\jungle\gobject.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\jungle\gtype.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\jungle\gclassinfo.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\jungle\gatpool.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\jungle\gview.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\ui\container\windowcontainer.h">
@@ -43,17 +28,38 @@
     <ClInclude Include="..\..\include\jungle\gtypes.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\jungle\guiobject.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\jungle\gwindow.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\jungle\gevent.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gsysbutton.h">
+      <Filter>ui\control\window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gwindow.h">
+      <Filter>ui\control\window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gstacklayout.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\guiobject.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gview.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gobject.h">
+      <Filter>jungle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gdata.h">
+      <Filter>jungle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gclassinfo.h">
+      <Filter>jungle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gatpool.h">
+      <Filter>jungle</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\jungle\gbutton.h">
-      <Filter>include</Filter>
+      <Filter>ui\control\button</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -99,6 +105,12 @@
     <ClCompile Include="..\..\source\ui\button\gbutton.cpp">
       <Filter>ui\control\button</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\ui\window\gsysbutton.cpp">
+      <Filter>ui\control\window</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ui\gstacklayout.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphic">
@@ -136,12 +148,6 @@
     </Filter>
     <Filter Include="io">
       <UniqueIdentifier>{cfe6c139-efb1-4340-a4bf-a8c9ba25bffc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui\layout">
-      <UniqueIdentifier>{c5eca077-8b40-442f-9182-668c3698ad20}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui\layout\stackpanel">
-      <UniqueIdentifier>{a690b678-0273-44ec-ab1a-9bbe37d9ac76}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
