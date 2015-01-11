@@ -61,6 +61,12 @@
     <ClInclude Include="..\..\include\jungle\gbutton.h">
       <Filter>ui\control\button</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\jungle\gdataserialize.h">
+      <Filter>jungle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\jungle\gdatatype.h">
+      <Filter>jungle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jungle.cpp">
@@ -110,6 +116,12 @@
     </ClCompile>
     <ClCompile Include="..\..\source\ui\gstacklayout.cpp">
       <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\jungle\gdataserialize.cpp">
+      <Filter>jungle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\jungle\gdatadoc.cpp">
+      <Filter>jungle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -44,6 +44,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\output\bin</OutDir>
+    <IntDir>..\..\output\tmp\$(ProjectName)</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -68,17 +70,22 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;JUNGLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__GEXPORT;WIN32;NDEBUG;_WINDOWS;_USRDLL;JUNGLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\include\jungle;..\..\include\thirdparty;..\..\source</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\..\output\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libtcmalloc.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>..\..\output\lib\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\jungle\gbutton.h" />
+    <ClInclude Include="..\..\include\jungle\gdatatype.h" />
     <ClInclude Include="..\..\include\jungle\gevent.h" />
     <ClInclude Include="..\..\include\jungle\gatpool.h" />
     <ClInclude Include="..\..\include\jungle\gclassinfo.h" />
@@ -91,6 +98,7 @@
     <ClInclude Include="..\..\include\jungle\guiobject.h" />
     <ClInclude Include="..\..\include\jungle\gview.h" />
     <ClInclude Include="..\..\include\jungle\gwindow.h" />
+    <ClInclude Include="..\..\source\jungle\gdataserialize.h" />
     <ClInclude Include="..\..\source\ui\container\container.h" />
     <ClInclude Include="..\..\source\ui\container\windib.h" />
     <ClInclude Include="..\..\source\ui\container\windowcontainer.h" />
@@ -109,6 +117,8 @@
     <ClCompile Include="..\..\source\jungle\gdata.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\source\jungle\gdatadoc.cpp" />
+    <ClCompile Include="..\..\source\jungle\gdataserialize.cpp" />
     <ClCompile Include="..\..\source\jungle\gobject.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>

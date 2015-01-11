@@ -53,8 +53,10 @@ typedef unsigned int        uint32;
 // See the comment above about NSPR and 64-bit.
 #if defined(__LP64__) && !defined(OS_MACOSX) && !defined(OS_OPENBSD)
 typedef unsigned long uint64;
+typedef long          int64;
 #else
 typedef unsigned long long uint64;
+typedef long long int64;
 #endif
 
 #if !(defined(__GNUC__) && defined(__GNUC_MINOR__) && ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))) && \

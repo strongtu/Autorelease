@@ -2,13 +2,7 @@
 #define __GDATA__H__
 
 #include "gobject.h"
-
-#define GDATA_SUPPORT_COM
-
-#ifdef GDATA_SUPPORT_COM
-#include <guiddef.h>
-#include <unknwn.h>
-#endif
+#include "gdatatype.h"
 
 class GAPI GData : public GObject
 {
@@ -16,78 +10,50 @@ class GAPI GData : public GObject
 
 public:
     typedef char FieldTypeType;
-    typedef void* FieldValueType;
     typedef const char* FieldNameType;
 
-    enum GDATA_TYPE
+    typedef struct data_string
     {
-	    GDATA_TYPE_NONE		= 0,
-	    GDATA_TYPE_BOOL		= 1,
-	    GDATA_TYPE_INT		= 2,
-        GDATA_TYPE_DOUBLE   = 4,
-	    GDATA_TYPE_DATA		= 5,
-	    GDATA_TYPE_ARRAY    = 6,
-        GDATA_TYPE_OBJECT   = 7,
-        GDATA_TYPE_STRING   = 8,
-        GDATA_TYPE_STRINGW  = 9,
-#ifdef GDATA_SUPPORT_COM
-        GDATA_TYPE_GUID     = 10,
-        GDATA_TYPE_INTERFACE= 11,
-#endif
-    };
+        uint32 len;
+        char   c;
+    }data_string;
 
-public:
-    GData(void);
-    virtual ~GData(void);
+    typedef struct data_wstring
+    {
+        uint32  len;
+        wchar_t wc;
+    }data_wstring;
 
-    int  getFieldCount() const;
-    FieldTypeType getFieldType(int index) const;
-    FieldTypeType getFieldType(FieldNameType szKey) const;
-	FieldNameType getFieldName(int index) const;
+    typedef struct int_vector
+    {
+        uint32      len;
+        const int   i;
+    }int_vector;
 
-    void delField(int index);
-    void delField(FieldNameType szKey);
+    typedef struct buffer
+    {
+        uint32  len;
+        byte    by;
+    }buffer;
 
-    int  getDoc(char* outBuf, int len) const;
-    bool setDoc(const char* outBuf, int len);
-    void copy(const GData* p, bool overWrite = true);
-    void copyField(const char* szKey, const GData* p);
+    typedef union FieldValueType
+    {
+        byte          bv;
+        int32         iv;
+        uint32        uv;
+        float         fv;
 
-    bool getBool(const char* szKey) const;
-    int  getInt(const char* szKey) const;
-    double getDouble(const char* szKey) const;
-    const char* getString(const char* szKey) const;
-    const wchar_t* getStringW(const char* szKey) const;
-#ifdef GDATA_SUPPORT_COM
-    GUID getGuid(const char* szKey) const;
-    IUnknown* getInterface(const char* szKey) const;
-#endif
+        void*         pv;
+        int64*        pi64;
+        uint64*       pu64;
+        data_string*  ps;
+        data_wstring* pws;
+        int_vector*   piv;
+        buffer*       pb;
 
-    void setBool(const char* szKey, bool value);
-    void setInt(const char* szKey, int value);
-    void setDouble(const char* szKey, double value);
-    void setString(const char* szKey, const char* str, int len = -1);
-    void setString(const char* szKey, const wchar_t* str, int len = -1);
-#ifdef GDATA_SUPPORT_COM
-    void setGuid(const char* szKey, REFGUID value);
-    void setInterface(const char* szKey, IUnknown* value);
-#endif
+        inline FieldValueType(void* v = 0) : pv(v) {}
+    }FieldValueType;
 
-    void clear(void);
-    bool reserve(int size);
-
-protected:
-    void setValue(FieldNameType szKey, FieldTypeType type, FieldValueType value);
-    bool getValue(const char* szKey, FieldTypeType& type, FieldValueType& value) const;
-    void freeValue(FieldTypeType type, FieldValueType value);
-    void freeItem(int index);
-
-    void* allocBuffer(int size) const;
-    void  freeBuffer(void* p) const;
-    FieldNameType allocName(const char* szKey) const;
-    void  freeName(FieldNameType name) const;
-
-protected:
     typedef struct DATA_ITEM
     {
         FieldTypeType  type;
@@ -95,9 +61,71 @@ protected:
         FieldValueType value;
     };
 
-    int   m_fieldCount;
-    int   m_allocCount;
-    DATA_ITEM * m_buffer;
+public:
+    GData(void);
+    virtual ~GData(void);
+
+    bool           getBool(const char* szKey) const;
+    int            getInt(const char* szKey) const;
+    uint32         getUint(const char* szKey) const;
+    int64          getInt64(const char* szKey) const;
+    uint64         getUint64(const char* szKey) const;
+    float          getFloat(const char* szKey) const;
+    const char*    getString(const char* szKey) const;
+    const wchar_t* getStringW(const char* szKey) const;
+    const void*    getBuffer(const char* szKey, int* plen);
+    GData*         getData(const char* szKey) const;
+    GObject*       getObject(const char* szKey) const;
+    const int*     getIntVector(const char* szKey, int* plen) const;
+#ifdef GDATA_SUPPORT_COM
+    IUnknown*      getInterface(const char* szKey) const;
+    GUID           getGuid(const char* szKey) const;
+#endif
+
+    void setBool(const char* szKey, bool value);
+    void setInt(const char* szKey, int value);
+    void setUint(const char* szKey, uint32 value);
+    void setInt64(const char* szKey, int64 value);
+    void setUint64(const char* szKey, uint64 value);
+    void setFloat(const char* szKey, float value);
+    void setString(const char* szKey, const char* value, int len = -1);
+    void setString(const char* szKey, const wchar_t* value, int len = -1);
+    void setBuffer(const char* szKey, const void* value, int len);
+    void setData(const char* szKey, GData* value);
+    void setObject(const char* szKey, GObject* value);
+    void setIntVector(const char* szKey, int* value, int len);
+#ifdef GDATA_SUPPORT_COM
+    void setInterface(const char* szKey, IUnknown* value);
+    void setGuid(const char* szKey, REFGUID value);
+#endif
+
+    void          clear(void);
+    bool          reserve(int size);
+    int           getFieldCount() const;
+    FieldTypeType getFieldType(int index) const;
+    FieldTypeType getFieldType(FieldNameType szKey) const;
+	FieldNameType getFieldName(int index) const;
+    void          delField(int index);
+    void          delField(FieldNameType szKey);
+
+    int           serialize(byte* outBuf, int len) const;
+    const byte*   unserialize(const byte* inbuf, int len);
+
+protected:
+    void setValue(FieldNameType szKey, FieldTypeType type, FieldValueType value, bool copyKey = true);
+    bool getValue(const char* szKey, FieldTypeType& type, FieldValueType& value) const;
+    void freeValue(FieldTypeType type, FieldValueType value);
+    void freeItem(int index);
+
+    inline void*  allocBuffer(int size) const;
+    inline void   freeBuffer(void* p) const;
+    FieldNameType allocName(const char* szKey, int len = -1) const;
+    void          freeName(FieldNameType name) const;
+
+protected:
+    int         m_fieldCount;
+    int         m_allocCount;
+    DATA_ITEM*  m_buffer;
 };
 
 #endif
