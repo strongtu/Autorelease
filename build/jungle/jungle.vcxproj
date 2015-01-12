@@ -84,6 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\jungle\garray.h" />
     <ClInclude Include="..\..\include\jungle\gbutton.h" />
     <ClInclude Include="..\..\include\jungle\gdatatype.h" />
     <ClInclude Include="..\..\include\jungle\gevent.h" />
@@ -108,6 +109,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\jungle\garray.cpp" />
     <ClCompile Include="..\..\source\jungle\gatpool.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>

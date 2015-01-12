@@ -67,6 +67,9 @@
     <ClInclude Include="..\..\include\jungle\gdatatype.h">
       <Filter>jungle</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\jungle\garray.h">
+      <Filter>jungle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jungle.cpp">
@@ -121,6 +124,9 @@
       <Filter>jungle</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\jungle\gdatadoc.cpp">
+      <Filter>jungle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\jungle\garray.cpp">
       <Filter>jungle</Filter>
     </ClCompile>
   </ItemGroup>

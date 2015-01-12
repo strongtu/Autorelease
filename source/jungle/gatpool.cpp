@@ -40,7 +40,7 @@ void GAutoreleasePool::pushTls(void)
     }
     else
     {
-        GAutoreleasePool* prev = (GAutoreleasePool*)TlsGetValue(_tlsKey);
+        GAutoreleasePool* prev = static_cast<GAutoreleasePool*>(TlsGetValue(_tlsKey));
         m_prev = prev;
         TlsSetValue(_tlsKey, this);
     }
@@ -67,7 +67,7 @@ void GAutoreleasePool::addObject(GObject* obj)
     }
     else
     {
-        GAutoreleasePool* pool = (GAutoreleasePool*)TlsGetValue(_tlsKey);
+        GAutoreleasePool* pool = static_cast<GAutoreleasePool*>(TlsGetValue(_tlsKey));
         pool->add(obj);
     }
 }
@@ -80,7 +80,7 @@ void GAutoreleasePool::drainObject()
     }
     else
     {
-        GAutoreleasePool* pool = (GAutoreleasePool*)TlsGetValue(_tlsKey);
+        GAutoreleasePool* pool = static_cast<GAutoreleasePool*>(TlsGetValue(_tlsKey));
         pool->drain();
     }
 }

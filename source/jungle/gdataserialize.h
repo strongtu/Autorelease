@@ -44,13 +44,13 @@ public:
     bool writeRawHash(const void* value, int len);
     bool writeSkip(int len);
 
-    byte* writeVarint32ToArray(uint32 value, byte* target);
-    byte* writeVarint64ToArray(uint64 value, byte* target);
-    const uint8* ReadVarint32FromArray(const uint8* buffer, uint32* value);
-    bool ReadVarint32Fallback(uint32* value);
-    bool ReadVarint32Slow(uint32* value);
-    bool ReadVarint64Fallback(uint64* value);
-    bool ReadVarint64Slow(uint64* value);
+    byte*        writeVarint32ToArray(uint32 value, byte* target);
+    byte*        writeVarint64ToArray(uint64 value, byte* target);
+    const uint8* readVarint32FromArray(const uint8* buffer, uint32* value);
+    bool         readVarint32Fallback(uint32* value);
+    bool         readVarint32Slow(uint32* value);
+    bool         readVarint64Fallback(uint64* value);
+    bool         readVarint64Slow(uint64* value);
 
     inline int varintSize32(uint32 value);
     inline int varintSize64(uint64 value);

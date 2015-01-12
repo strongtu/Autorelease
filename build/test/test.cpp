@@ -21,29 +21,63 @@ void TestData()
 
     GData* pdata = (GData*)GData::createObject();
 
-    DWORD dw = GetTickCount();
+    g_t1 = GetTickCount();
     for (int i = 0; i < 1000000; i++)
     {
-        pdata->setBool("b123456789", true);
-        pdata->delField("b123456789");
+        GData* pData = (GData*)GData::createObject();
+
+        // Ôö
+        pData->setBool("bool", true);
+        pData->setInt("int", -123);
+        pData->setUint("uint", 1234);
+        pData->setFloat("double", 4.5123);
+        pData->setString("string", "i am a string");
+        pData->setString("stringW", _T("i am a fat string"));
+
+        // É¾
+        pData->delField("bool");
+        pData->delField("int");
+        pData->delField("uint");
+        pData->delField("double");
+        pData->delField("string");
+        pData->delField("stringW");
+
+        pData->release();
     }
-    g_t1 = GetTickCount() - dw;
+    g_t2 = GetTickCount();
 
-    pdata->setBool("b3123456789", TRUE);
-    pdata->setInt("i2123456789", 100);
-
+    GData* pData = (GData*)GData::createObject();
+    pData->setBool("bool", true);
+    pData->setInt("int", -123);
+    pData->setUint("uint", 1234);
+    pData->setFloat("double", 4.5123);
+    pData->setString("string", "i am a string");
+    pData->setString("stringW", _T("i am a fat string"));
     for (int i = 0; i < 1000000; i++)
     {
-        bool b = pdata->getBool("b3123456789");
-        int k = pdata->getInt("i2123456789");
+        // ¸Ä
+        pData->setBool("bool", false);
+        pData->setInt("int", -123);
+        pData->setUint("uint", 4321);
+        pData->setFloat("double", -4.5123);
+        pData->setString("string", "another string");
+        pData->setString("stringW", _T("another fat string"));
+
+        // ²é
+        bool bv = pData->getBool("bool");
+        int iv = pData->getInt("int");
+        uint32 uv = pData->getUint("uint");
+        double db = pData->getFloat("double");
+        const char* bs = pData->getString("string");
+        const wchar_t* bsw = pData->getStringW("stringW");
     }
 
-    g_t2 = GetTickCount() - dw;
+    g_t3 = GetTickCount();
 
     pdata->release();
 }
 
-void TestSerialize(void)
+void TestSerializeSpeed(void)
 {
     GAutoreleasePool* apt = (GAutoreleasePool*)GAutoreleasePool::createObject();
 
@@ -67,7 +101,7 @@ void TestSerialize(void)
 
     g_t1 = GetTickCount();
 
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 1000000; i++)
     {
         int len = pdata->serialize(nullptr, 0);
         byte* buf = new byte[len];
@@ -82,7 +116,7 @@ void TestSerialize(void)
     int outlen = pdata->serialize(buf, len);
 
     pdata = (GData*)GData::createObject()->autorelease();
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 1000000; i++)
     {
         pdata->unserialize(buf, outlen);
     }
@@ -112,7 +146,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
 {
-    TestSerialize();
+//    TestSerializeSpeed();
+    TestData();
     return 1;
 
     GWindow *pWindow = (GWindow*)GWindow::createObject();

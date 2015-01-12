@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "gclassinfo.h"  
-      
+
 GClassInfo::ClassTable* GClassInfo::_classTable = NULL;  
 
 GClassInfo::GClassInfo(const char* className, const GClassInfo* baseInfo, int size, FNGObjectCreateCallback fun)  
@@ -59,4 +59,5 @@ void GClassInfo::unregisterClass()
 		}
 	}     
 }  
-  
+
+

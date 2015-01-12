@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "gdata.h"
+#include "garray.h"
 #include "tcmalloc\tcmalloc.h"
 
 IMPLEMENT_GDYNAMIC_CLASS(GData, GObject);
@@ -75,7 +76,7 @@ const char* GData::getString(const char* szKey) const
     FieldTypeType type = GDATA_TYPE_STRING;
     FieldValueType value = nullptr;
 
-    return getValue(szKey, type, value) ? &(value.ps->c) : nullptr;
+    return getValue(szKey, type, value) ? (value.ps->c) : nullptr;
 }
 
 const wchar_t* GData::getStringW(const char* szKey) const
@@ -83,10 +84,10 @@ const wchar_t* GData::getStringW(const char* szKey) const
     FieldTypeType type = GDATA_TYPE_STRINGW;
     FieldValueType value = nullptr;
 
-    return getValue(szKey, type, value) ? &(value.pws->wc) : nullptr;
+    return getValue(szKey, type, value) ? (value.pws->wc) : nullptr;
 }
 
-const void* GData::getBuffer(const char* szKey, int* plen)
+const void* GData::getBuffer(const char* szKey, int* plen) const
 {
     FieldTypeType type = GDATA_TYPE_BUFFER;
     FieldValueType value = nullptr;
@@ -94,7 +95,7 @@ const void* GData::getBuffer(const char* szKey, int* plen)
     if (getValue(szKey, type, value))
     {
         *plen = value.pb->len;
-        return &(value.pb->by);
+        return value.pb->by;
     }
     else
     {
@@ -107,14 +108,21 @@ GData* GData::getData(const char* szKey) const
 {
     FieldTypeType type = GDATA_TYPE_DATA;
     FieldValueType value = nullptr;
-    return getValue(szKey, type, value) ? (GData*)value.pv : nullptr;
+    return getValue(szKey, type, value) ? value.pdata : nullptr;
+}
+
+GArray* GData::getArray(const char* szKey) const
+{
+    FieldTypeType type = GDATA_TYPE_ARRAY;
+    FieldValueType value = nullptr;
+    return getValue(szKey, type, value) ? value.parray : nullptr;
 }
 
 GObject* GData::getObject(const char* szKey) const
 {
     FieldTypeType type = GDATA_TYPE_OBJECT;
     FieldValueType value = nullptr;
-    return getValue(szKey, type, value) ? (GData*)value.pv : nullptr;
+    return getValue(szKey, type, value) ? static_cast<GObject*>(value.pv) : nullptr;
 }
 
 const int* GData::getIntVector(const char* szKey, int* plen) const
@@ -125,7 +133,7 @@ const int* GData::getIntVector(const char* szKey, int* plen) const
     if (getValue(szKey, type, value))
     {
         *plen = value.piv->len;
-        return &(value.piv->i);
+        return value.piv->i;
     }
     else
     {
@@ -197,11 +205,11 @@ void GData::setString(const char* szKey, const char* str, int len)
     if (len < 0) len = strlen(str);
 
     FieldValueType value;
-    value.ps = static_cast<data_string*>(allocBuffer(sizeof(value.ps->len) + (len + 1) * sizeof(value.ps->c)));
+    value.ps = static_cast<data_string*>(allocBuffer(sizeof(value.ps->len) + (len + 1) * sizeof(value.ps->c[0])));
     value.ps->len = len;
 
-    memcpy(&(value.ps->c), str, len * sizeof(char));
-    (&(value.ps->c))[len] = 0;
+    memcpy(value.ps->c, str, len * sizeof(char));
+    ((value.ps->c))[len] = 0;
 
     setValue(szKey, GDATA_TYPE_STRING, value);
 }
@@ -212,11 +220,11 @@ void GData::setString(const char* szKey, const wchar_t* str, int len)
     if (len < 0) len = wcslen(str);
 
     FieldValueType value;
-    value.pws = static_cast<data_wstring*>(allocBuffer(sizeof(value.pws->len) + (len + 1) * sizeof(value.pws->wc)));
+    value.pws = static_cast<data_wstring*>(allocBuffer(sizeof(value.pws->len) + (len + 1) * sizeof(value.pws->wc[0])));
     value.pws->len = len;
 
-    memcpy(&(value.ps->c), str, len * sizeof(wchar_t));
-    (&(value.pws->wc))[len] = 0;
+    memcpy(value.pws->wc, str, len * sizeof(wchar_t));
+    ((value.pws->wc))[len] = 0;
 
     setValue(szKey, GDATA_TYPE_STRINGW, value);
 }
@@ -225,7 +233,7 @@ void GData::setBuffer(const char* szKey, const void* value, int len)
 {
     buffer* p = static_cast<buffer*>(allocBuffer(len + sizeof(p->len)));
     p->len = len;
-    memcpy(&p->by, value, len);
+    memcpy(p->by, value, len);
     
     FieldValueType v = p;
     setValue(szKey, GDATA_TYPE_BUFFER, v);
@@ -236,6 +244,13 @@ void GData::setData(const char* szKey, GData* value)
     if (value) value->retain();
     FieldValueType v = value;
     setValue(szKey, GDATA_TYPE_DATA, v);
+}
+
+void GData::setArray(const char* szKey, GArray* value)
+{
+    if (value) value->retain();
+    FieldValueType v = value;
+    setValue(szKey, GDATA_TYPE_ARRAY, v);
 }
 
 void GData::setObject(const char* szKey, GObject* value)
@@ -249,7 +264,7 @@ void GData::setIntVector(const char* szKey, int* value, int len)
 {
     int_vector* p = static_cast<int_vector*>(allocBuffer(sizeof(p->len) + len * sizeof(int)));
     p->len = len;
-    memcpy(const_cast<int*>(&p->i), value, len * sizeof(int));
+    memcpy(p->i, value, len * sizeof(int));
     FieldValueType v = p;
     setValue(szKey, GDATA_TYPE_INTVECTOR, v);
 }
@@ -460,16 +475,6 @@ void GData::freeItem(int index)
     }
 
     --m_fieldCount;
-}
-
-inline void* GData::allocBuffer(int size) const
-{
-    return tc_malloc(size);
-}
-
-inline void GData::freeBuffer(void* p) const
-{
-    return tc_free(p);
 }
 
 GData::FieldNameType GData::allocName(const char* szKey, int len) const

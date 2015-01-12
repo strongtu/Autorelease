@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "gobject.h"
 #include "gatpool.h"
+#include "tcmalloc\tcmalloc.h"
 
 GClassInfo GObject::_classInfo("GObject", NULL,  sizeof(GObject), GObject::createObject); 
 
@@ -11,7 +12,8 @@ GClassInfo* GObject::getClassInfo() const
 
 GObject* GObject::createObject()						
 {
-	return new GObject; 
+    void* p = allocBuffer(sizeof(GObject));
+	return new (p) GObject; 
 }
 
 GObject::GObject()
@@ -40,7 +42,18 @@ int GObject::release(void)
     int ref = --m_ref;
     if (ref <= 0)
     {
-        delete this;
+        this->~GObject();
+        freeBuffer(this);
     }
     return ref;
+}
+
+void* GObject::allocBuffer(int size)
+{
+    return tc_malloc(size);
+}
+
+void GObject::freeBuffer(void* p)
+{
+    tc_free(p);
 }

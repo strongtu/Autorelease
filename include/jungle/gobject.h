@@ -16,6 +16,8 @@ public:
     GObject* autorelease(void);
     int release(void);
 
+    static void*  allocBuffer(int size);
+    static void   freeBuffer(void* p);
 private:
     int m_ref;
 };

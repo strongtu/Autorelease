@@ -16,8 +16,7 @@ public:
     GClassInfo(const char* className, const GClassInfo* baseInfo, int size, FNGObjectCreateCallback fun);
     ~GClassInfo();
  
-    static GObject* createObject(const char* name);  
-
+    static GObject* createObject(const char* name);
     GObject* createObject();
 
     inline bool isDynamic() const   
@@ -79,7 +78,8 @@ GClassInfo* name::getClassInfo() const  \
 }                                       \
 GObject* name::createObject()           \
 {                                       \
-    return new name;                    \
+    void* p = GObject::allocBuffer(sizeof(name));\
+    return new (p) name;                \
 }
       
 #endif

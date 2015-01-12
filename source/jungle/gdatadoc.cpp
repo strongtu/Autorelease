@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "gdata.h"
+#include "garray.h"
 #include "gdataserialize.h"
 
 namespace
@@ -22,7 +23,7 @@ namespace
         int len = strlen(p->name);
         if (!ser.writeByte(p->type) ||
             !ser.writeVarint32(len) ||
-            !ser.writeRawHash((const byte*)p->name, len))
+            !ser.writeRawHash(p->name, len))
         {
             return false;
         }
@@ -44,10 +45,10 @@ namespace
             return ser.writeFixed32(value.uv);
         case GDATA_TYPE_STRING:
             return ser.writeVarint32(value.ps->len) &&
-                   ser.writeRawHash((byte*)(&(value.ps->c)), value.ps->len);
+                   ser.writeRawHash(value.ps->c, value.ps->len);
         case GDATA_TYPE_STRINGW:
             {
-                int utf8len = utf162utf8(&value.pws->wc, value.pws->len, nullptr, 0);
+                int utf8len = utf162utf8(value.pws->wc, value.pws->len, nullptr, 0);
                 if (!ser.getOutBuf())
                 {
                     return ser.writeVarint32(utf8len) &&
@@ -57,25 +58,35 @@ namespace
                 {
                     if (!ser.writeVarint32(utf8len) || ser.getOutLeft() < utf8len) return false;
                     // we have enough buffer now
-                    utf162utf8(&value.pws->wc, value.pws->len, (char*)ser.getWrite(), utf8len);
+                    utf162utf8(value.pws->wc, value.pws->len, (char*)ser.getWrite(), utf8len);
                     return ser.writeRawHash(ser.getWrite(), utf8len);
                 }
             }
         case GDATA_TYPE_BUFFER:
             return ser.writeVarint32(value.pb->len) &&
-                    ser.writeRawHash(&(value.pb->by), value.pb->len);
+                   ser.writeRawHash(value.pb->by, value.pb->len);
         case GDATA_TYPE_DATA:
             if (ser.getOutBuf())
             {
-                int docSize = ((GData*)value.pv)->serialize(ser.getWrite(), ser.getOutLeft());
+                int docSize = value.pdata->serialize(ser.getWrite(), ser.getOutLeft());
                 return ser.writeSkip(docSize);
             }
             else
             {
-                int docSize = ((GData*)value.pv)->serialize(nullptr, 0);
+                int docSize = value.pdata->serialize(nullptr, 0);
                 return ser.writeSkip(docSize);
             }
         case GDATA_TYPE_ARRAY:
+            if (ser.getOutBuf())
+            {
+                int docSize = value.parray->serialize(ser.getWrite(), ser.getOutLeft());
+                return ser.writeSkip(docSize);
+            }
+            else
+            {
+                int docSize = value.parray->serialize(nullptr, 0);
+                return ser.writeSkip(docSize);
+            }
             return false;
         case GDATA_TYPE_INTVECTOR:
         {
@@ -84,7 +95,7 @@ namespace
             {
                 for (int i = 0; i < value.piv->len; i++)
                 {
-                    if (!ser.writeVarint32(ser.zigZagEncode32((&(value.piv->i))[i]))) return false;
+                    if (!ser.writeVarint32(ser.zigZagEncode32(value.piv->i[i]))) return false;
                 }
                 return true;
             }
@@ -95,7 +106,7 @@ namespace
         }
 #ifdef GDATA_SUPPORT_COM
         case GDATA_TYPE_GUID:
-            return ser.writeRaw(static_cast<byte*>(value.pv), sizeof(GUID));
+            return ser.writeRaw(value.pv, sizeof(GUID));
 #endif
         default:
             return false;
@@ -253,11 +264,11 @@ const byte* GData::unserialize(const byte* inbuf, int len)
             uint32 len = 0;
             if (!ser.readVarint32(len) || ser.getInLeft() < len) { __GDATA_BADREAD__ }
 
-            value.ps = static_cast<data_string*>(allocBuffer(sizeof(value.ps->len) + (len + 1) * sizeof(value.ps->c)));
+            value.ps = static_cast<data_string*>(allocBuffer(sizeof(value.ps->len) + (len + 1) * sizeof(value.ps->c[0])));
             value.ps->len = len;
 
             ser.readRawHash(&(value.ps->c), len);
-            (&(value.ps->c))[len] = 0;
+            value.ps->c[len] = 0;
 
             setValue(fieldName, fieldType, value, false);
             break;
@@ -267,17 +278,17 @@ const byte* GData::unserialize(const byte* inbuf, int len)
             uint32 len = 0;
             if (!ser.readVarint32(len) || ser.getInLeft() < len) { __GDATA_BADREAD__ }
 
-            data_string* ps = static_cast<data_string*>(allocBuffer(sizeof(ps->len) + (len + 1) * sizeof(ps->c)));
+            data_string* ps = static_cast<data_string*>(allocBuffer(sizeof(ps->len) + (len + 1) * sizeof(ps->c[0])));
             ps->len = len;
 
             ser.readRawHash(&(ps->c), len);
-            (&(ps->c))[len] = 0;
+            ps->c[len] = 0;
 
-            int wslen = utf82utf16(&(ps->c), ps->len, nullptr, 0); 
-            data_wstring* psw = static_cast<data_wstring*>(allocBuffer(sizeof(psw->len) + (wslen + 1) * sizeof(psw->wc)));
+            int wslen = utf82utf16((ps->c), ps->len, nullptr, 0); 
+            data_wstring* psw = static_cast<data_wstring*>(allocBuffer(sizeof(psw->len) + (wslen + 1) * sizeof(psw->wc[0])));
             psw->len = wslen;
-            (&(psw->wc))[wslen] = 0;
-            utf82utf16(&(ps->c), ps->len, &(psw->wc), psw->len);
+            psw->wc[wslen] = 0;
+            utf82utf16((ps->c), ps->len, (psw->wc), psw->len);
 
             freeBuffer(ps);
 
@@ -291,7 +302,7 @@ const byte* GData::unserialize(const byte* inbuf, int len)
             if (!ser.readVarint32(len) || ser.getInLeft() < len) { __GDATA_BADREAD__ }
 
             value.pb = static_cast<buffer*>(allocBuffer(sizeof(value.pb->len) + len));
-            ser.readRawHash(&(value.pb->by), len);
+            ser.readRawHash(value.pb->by, len);
 
             setValue(fieldName, fieldType, value, false);
             break;
@@ -302,7 +313,7 @@ const byte* GData::unserialize(const byte* inbuf, int len)
             int docSize = data->unserialize(ser.getRead(), ser.getInLeft()) - ser.getRead();
             if (!docSize) { data->release(); __GDATA_BADREAD__ }
             ser.readSkip(docSize);
-            value.pv = data;
+            value.pdata = data;
             setValue(fieldName, fieldType, value, false);
             break;
         }
@@ -315,8 +326,9 @@ const byte* GData::unserialize(const byte* inbuf, int len)
             uint32 len = 0;
             if (!ser.readVarint32(len) || ser.getInLeft() < len * sizeof(int)) { __GDATA_BADREAD__ }
 
-            value.piv = static_cast<int_vector*>(allocBuffer(len * sizeof(int)));
-            int* pi = const_cast<int*>(&(value.piv->i));
+            value.piv = static_cast<int_vector*>(allocBuffer((len + 1) * sizeof(int)));
+            value.piv->len = len;
+            int* pi = value.piv->i;
             for (int i = 0; i < len; i++)
             {
                 uint32 uv = 0;

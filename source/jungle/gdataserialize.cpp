@@ -159,11 +159,11 @@ bool GDataSerialize::readVarint32(uint32 &value)
     value = *m_readBuf++;
     return true;
   } else {
-    return ReadVarint32Fallback(&value);
+    return readVarint32Fallback(&value);
   }
 }
 
-const uint8* GDataSerialize::ReadVarint32FromArray(const uint8* buffer, uint32* value) {
+const uint8* GDataSerialize::readVarint32FromArray(const uint8* buffer, uint32* value) {
   // Fast path:  We have enough bytes left in the buffer to guarantee that
   // this read won't cross the end, so we can skip the checks.
   const uint8* ptr = buffer;
@@ -191,10 +191,10 @@ const uint8* GDataSerialize::ReadVarint32FromArray(const uint8* buffer, uint32* 
   return ptr;
 }
 
-bool GDataSerialize::ReadVarint32Fallback(uint32* value) {
+bool GDataSerialize::readVarint32Fallback(uint32* value) {
   if ((m_inBufEnd - m_readBuf) >= kMaxVarintBytes ||
       (m_inBufEnd > m_readBuf && !(m_inBufEnd[-1] & 0x80))) {
-    const uint8* end = ReadVarint32FromArray(m_readBuf, value);
+    const uint8* end = readVarint32FromArray(m_readBuf, value);
     if (end == nullptr) return false;
     
     m_readBuf = end;
@@ -203,15 +203,15 @@ bool GDataSerialize::ReadVarint32Fallback(uint32* value) {
     // Really slow case: we will incur the cost of an extra function call here,
     // but moving this out of line reduces the size of this function, which
     // improves the common case. In micro benchmarks, this is worth about 10-15%
-    return ReadVarint32Slow(value);
+    return readVarint32Slow(value);
   }
 }
 
-bool GDataSerialize::ReadVarint32Slow(uint32* value) {
+bool GDataSerialize::readVarint32Slow(uint32* value) {
   uint64 result;
   // Directly invoke ReadVarint64Fallback, since we already tried to optimize
   // for one-byte varints.
-  if (!ReadVarint64Fallback(&result)) return false;
+  if (!readVarint64Fallback(&result)) return false;
   *value = (uint32)result;
   return true;
 }
@@ -222,11 +222,11 @@ bool GDataSerialize::readVarint64(uint64 &value)
     value = *m_readBuf++;
     return true;
   } else {
-    return ReadVarint64Fallback(&value);
+    return readVarint64Fallback(&value);
   }
 }
 
-bool GDataSerialize::ReadVarint64Fallback(uint64* value) {
+bool GDataSerialize::readVarint64Fallback(uint64* value) {
   if ((m_inBufEnd - m_readBuf) >= kMaxVarintBytes ||
       (m_inBufEnd > m_readBuf && !(m_inBufEnd[-1] & 0x80))) {
     const uint8* ptr = m_readBuf;
@@ -258,11 +258,11 @@ done:
              (static_cast<uint64>(part2) << 56);
     return true;
   } else {
-    return ReadVarint64Slow(value);
+    return readVarint64Slow(value);
   }
 }
 
-bool GDataSerialize::ReadVarint64Slow(uint64* value) {
+bool GDataSerialize::readVarint64Slow(uint64* value) {
   // Slow path:  This read might cross the end of the buffer, so we
   // need to check and refresh the buffer if and when it does.
 
@@ -501,24 +501,3 @@ inline int GDataSerialize::varintSize64(uint64 value) {
     }
   }
 }
-/*
-inline uint32 GDataSerialize::zigZagEncode32(int32 n)
-{
-    return (n << 1) ^ (n >> 31); 
-}
-
-inline int32 GDataSerialize::zigZagDecode32(uint32 n) 
-{
-  return (n >> 1) ^ -static_cast<int32>(n & 1);
-}
-
-inline uint64 GDataSerialize::zigZagEncode64(int64 n)
-{
-    return (n << 1) ^ (n >> 63);
-}
-
-inline int64 GDataSerialize::zigZagDecode64(uint64 n) 
-{
-  return (n >> 1) ^ -static_cast<int64>(n & 1);
-}
-*/

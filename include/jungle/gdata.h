@@ -15,25 +15,25 @@ public:
     typedef struct data_string
     {
         uint32 len;
-        char   c;
+        char   c[];
     }data_string;
 
     typedef struct data_wstring
     {
         uint32  len;
-        wchar_t wc;
+        wchar_t wc[];
     }data_wstring;
 
     typedef struct int_vector
     {
-        uint32      len;
-        const int   i;
+        uint32  len;
+        int     i[];
     }int_vector;
 
     typedef struct buffer
     {
         uint32  len;
-        byte    by;
+        byte    by[];
     }buffer;
 
     typedef union FieldValueType
@@ -50,6 +50,8 @@ public:
         data_wstring* pws;
         int_vector*   piv;
         buffer*       pb;
+        GData*        pdata;
+        GArray*       parray;
 
         inline FieldValueType(void* v = 0) : pv(v) {}
     }FieldValueType;
@@ -73,8 +75,9 @@ public:
     float          getFloat(const char* szKey) const;
     const char*    getString(const char* szKey) const;
     const wchar_t* getStringW(const char* szKey) const;
-    const void*    getBuffer(const char* szKey, int* plen);
+    const void*    getBuffer(const char* szKey, int* plen) const;
     GData*         getData(const char* szKey) const;
+    GArray*        getArray(const char* szKey) const;
     GObject*       getObject(const char* szKey) const;
     const int*     getIntVector(const char* szKey, int* plen) const;
 #ifdef GDATA_SUPPORT_COM
@@ -92,6 +95,7 @@ public:
     void setString(const char* szKey, const wchar_t* value, int len = -1);
     void setBuffer(const char* szKey, const void* value, int len);
     void setData(const char* szKey, GData* value);
+    void setArray(const char* szKey, GArray* value);
     void setObject(const char* szKey, GObject* value);
     void setIntVector(const char* szKey, int* value, int len);
 #ifdef GDATA_SUPPORT_COM
@@ -117,8 +121,6 @@ protected:
     void freeValue(FieldTypeType type, FieldValueType value);
     void freeItem(int index);
 
-    inline void*  allocBuffer(int size) const;
-    inline void   freeBuffer(void* p) const;
     FieldNameType allocName(const char* szKey, int len = -1) const;
     void          freeName(FieldNameType name) const;
 
