@@ -7,12 +7,15 @@
 #include "gobject.h"
 #include "gatpool.h"
 #include "gdata.h"
+#include "garray.h"
 #include "gwindow.h"
 #include "gbutton.h"
 
 DWORD g_t1 = 0;
 DWORD g_t2 = 0;
 DWORD g_t3 = 0;
+
+const int g_count = 10;
 
 void TestData()
 {
@@ -22,7 +25,7 @@ void TestData()
     GData* pdata = (GData*)GData::createObject();
 
     g_t1 = GetTickCount();
-    for (int i = 0; i < 1000000; i++)
+    for (int i = 0; i < g_count; i++)
     {
         GData* pData = (GData*)GData::createObject();
 
@@ -53,7 +56,7 @@ void TestData()
     pData->setFloat("double", 4.5123);
     pData->setString("string", "i am a string");
     pData->setString("stringW", _T("i am a fat string"));
-    for (int i = 0; i < 1000000; i++)
+    for (int i = 0; i < g_count; i++)
     {
         // ¸Ä
         pData->setBool("bool", false);
@@ -83,6 +86,7 @@ void TestSerializeSpeed(void)
 
     GData* pdata = (GData*)GData::createObject()->autorelease();
     GData* psubData = (GData*)GData::createObject()->autorelease();
+    GArray* psubArray = (GArray*)GArray::createObject()->autorelease();
 
     pdata->setBool("bool", true);
     pdata->setInt("int", -123);
@@ -97,11 +101,17 @@ void TestSerializeSpeed(void)
     psubData->setString("string", "string a am i");
     psubData->setString("stringW", L"string fat a am i");
 
+    psubArray->addBool(false);
+    psubArray->addInt(100);
+    psubArray->addString("hello");
+    psubArray->addString(L"hello fat");
+
     pdata->setData("data", psubData);
+    pdata->setArray("array", psubArray);
 
     g_t1 = GetTickCount();
 
-    for (int i = 0; i < 1000000; i++)
+    for (int i = 0; i < g_count; i++)
     {
         int len = pdata->serialize(nullptr, 0);
         byte* buf = new byte[len];
@@ -116,7 +126,7 @@ void TestSerializeSpeed(void)
     int outlen = pdata->serialize(buf, len);
 
     pdata = (GData*)GData::createObject()->autorelease();
-    for (int i = 0; i < 1000000; i++)
+    for (int i = 0; i < g_count; i++)
     {
         pdata->unserialize(buf, outlen);
     }
@@ -128,6 +138,13 @@ void TestSerializeSpeed(void)
     float d = pdata->getFloat("double");
     const char* p = pdata->getString("string");
     const wchar_t* pw = pdata->getStringW("stringW");
+
+    psubArray = pdata->getArray("array");
+
+    bool b3 = psubArray->getBool(0);
+    int i3 = psubArray->getInt(1);
+    const char* p3 = psubArray->getString(2);
+    const wchar_t* pw3 = psubArray->getStringW(3);
 
     pdata = pdata->getData("data");
     bool b2 = pdata->getBool("bool");
@@ -146,8 +163,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
 {
-//    TestSerializeSpeed();
-    TestData();
+    TestSerializeSpeed();
+//    TestData();
     return 1;
 
     GWindow *pWindow = (GWindow*)GWindow::createObject();

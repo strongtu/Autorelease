@@ -32,4 +32,31 @@ enum GDATA_TYPE
     // 以下所有新增类型，必须保持TLV结构，否则兼容有问题
 };
 
+typedef char FieldTypeType;
+
+struct data_string;
+struct data_wstring;
+struct int_vector;
+struct buffer;
+
+typedef union FieldValueType
+{
+    byte          bv;
+    int32         iv;
+    uint32        uv;
+    float         fv;
+
+    void*         pv;
+    int64*        pi64;
+    uint64*       pu64;
+    data_string*  ps;
+    data_wstring* pws;
+    int_vector*   piv;
+    buffer*       pb;
+    GData*        pdata;
+    GArray*       parray;
+
+    inline FieldValueType(void* v = 0) : pv(v) {}
+}FieldValueType;
+
 #endif

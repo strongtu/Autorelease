@@ -9,52 +9,7 @@ class GAPI GData : public GObject
     DECLARE_GDYNAMIC_CLASS(GData)
 
 public:
-    typedef char FieldTypeType;
     typedef const char* FieldNameType;
-
-    typedef struct data_string
-    {
-        uint32 len;
-        char   c[];
-    }data_string;
-
-    typedef struct data_wstring
-    {
-        uint32  len;
-        wchar_t wc[];
-    }data_wstring;
-
-    typedef struct int_vector
-    {
-        uint32  len;
-        int     i[];
-    }int_vector;
-
-    typedef struct buffer
-    {
-        uint32  len;
-        byte    by[];
-    }buffer;
-
-    typedef union FieldValueType
-    {
-        byte          bv;
-        int32         iv;
-        uint32        uv;
-        float         fv;
-
-        void*         pv;
-        int64*        pi64;
-        uint64*       pu64;
-        data_string*  ps;
-        data_wstring* pws;
-        int_vector*   piv;
-        buffer*       pb;
-        GData*        pdata;
-        GArray*       parray;
-
-        inline FieldValueType(void* v = 0) : pv(v) {}
-    }FieldValueType;
 
     typedef struct DATA_ITEM
     {
@@ -62,7 +17,6 @@ public:
         FieldNameType  name;
         FieldValueType value;
     };
-
 public:
     GData(void);
     virtual ~GData(void);
@@ -97,7 +51,7 @@ public:
     void setData(const char* szKey, GData* value);
     void setArray(const char* szKey, GArray* value);
     void setObject(const char* szKey, GObject* value);
-    void setIntVector(const char* szKey, int* value, int len);
+    void setIntVector(const char* szKey, const int* value, int len);
 #ifdef GDATA_SUPPORT_COM
     void setInterface(const char* szKey, IUnknown* value);
     void setGuid(const char* szKey, REFGUID value);
@@ -118,7 +72,6 @@ public:
 protected:
     void setValue(FieldNameType szKey, FieldTypeType type, FieldValueType value, bool copyKey = true);
     bool getValue(const char* szKey, FieldTypeType& type, FieldValueType& value) const;
-    void freeValue(FieldTypeType type, FieldValueType value);
     void freeItem(int index);
 
     FieldNameType allocName(const char* szKey, int len = -1) const;

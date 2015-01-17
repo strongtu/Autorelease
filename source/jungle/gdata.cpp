@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "gdata.h"
 #include "garray.h"
-#include "tcmalloc\tcmalloc.h"
+#include "gfield.h"
 
 IMPLEMENT_GDYNAMIC_CLASS(GData, GObject);
 
@@ -16,11 +16,6 @@ GData::GData(void)
 GData::~GData(void)
 {
     clear();
-}
-
-int GData::getFieldCount() const
-{
-    return m_fieldCount;
 }
 
 bool GData::getBool(const char* szKey) const
@@ -201,41 +196,19 @@ void GData::setFloat(const char* szKey, float value)
 
 void GData::setString(const char* szKey, const char* str, int len)
 {
-    // we count length without \0
-    if (len < 0) len = strlen(str);
-
-    FieldValueType value;
-    value.ps = static_cast<data_string*>(allocBuffer(sizeof(value.ps->len) + (len + 1) * sizeof(value.ps->c[0])));
-    value.ps->len = len;
-
-    memcpy(value.ps->c, str, len * sizeof(char));
-    ((value.ps->c))[len] = 0;
-
+    FieldValueType value = newDataString(str, len);
     setValue(szKey, GDATA_TYPE_STRING, value);
 }
 
 void GData::setString(const char* szKey, const wchar_t* str, int len)
-{
-    // we count length without \0
-    if (len < 0) len = wcslen(str);
-
-    FieldValueType value;
-    value.pws = static_cast<data_wstring*>(allocBuffer(sizeof(value.pws->len) + (len + 1) * sizeof(value.pws->wc[0])));
-    value.pws->len = len;
-
-    memcpy(value.pws->wc, str, len * sizeof(wchar_t));
-    ((value.pws->wc))[len] = 0;
-
+{   
+    FieldValueType value = newDataString(str, len);
     setValue(szKey, GDATA_TYPE_STRINGW, value);
 }
 
 void GData::setBuffer(const char* szKey, const void* value, int len)
 {
-    buffer* p = static_cast<buffer*>(allocBuffer(len + sizeof(p->len)));
-    p->len = len;
-    memcpy(p->by, value, len);
-    
-    FieldValueType v = p;
+    FieldValueType v = newBuffer(value, len);
     setValue(szKey, GDATA_TYPE_BUFFER, v);
 }
 
@@ -260,12 +233,9 @@ void GData::setObject(const char* szKey, GObject* value)
     setValue(szKey, GDATA_TYPE_OBJECT, v);
 }
 
-void GData::setIntVector(const char* szKey, int* value, int len)
+void GData::setIntVector(const char* szKey, const int* value, int len)
 {
-    int_vector* p = static_cast<int_vector*>(allocBuffer(sizeof(p->len) + len * sizeof(int)));
-    p->len = len;
-    memcpy(p->i, value, len * sizeof(int));
-    FieldValueType v = p;
+    FieldValueType v = newIntVector(value, len);
     setValue(szKey, GDATA_TYPE_INTVECTOR, v);
 }
 
@@ -273,17 +243,13 @@ void GData::setIntVector(const char* szKey, int* value, int len)
 void GData::setInterface(const char* szKey, IUnknown* value)
 {
     if (value) value->AddRef();
-    FieldValueType v;
-    v.pv = value;
-
-	setValue(szKey, GDATA_TYPE_GUID, v);
+    FieldValueType v = value;
+	setValue(szKey, GDATA_TYPE_INTERFACE, v);
 }
 
 void GData::setGuid(const char* szKey, REFGUID value)
 {
-    FieldValueType v;
-    v.pv = (GUID*)memcpy(allocBuffer(sizeof(GUID)), &value, sizeof(GUID));
-
+    FieldValueType v = memcpy(allocBuffer(sizeof(GUID)), &value, sizeof(GUID));
     setValue(szKey, GDATA_TYPE_GUID, v);
 }
 #endif
@@ -331,14 +297,19 @@ bool GData::reserve(int size)
 	return true;
 }
 
-GData::FieldTypeType GData::getFieldType(int index) const
+int GData::getFieldCount() const
+{
+    return m_fieldCount;
+}
+
+FieldTypeType GData::getFieldType(int index) const
 {
     if (index < 0 || index >= m_fieldCount) return GDATA_TYPE_NONE;
 
     return m_buffer[index].type;
 }
 
-GData::FieldTypeType GData::getFieldType(FieldNameType szKey) const
+FieldTypeType GData::getFieldType(FieldNameType szKey) const
 {
     DATA_ITEM * p = m_buffer;
     for (int i = 0; i < m_fieldCount; ++i, ++p)
@@ -424,42 +395,6 @@ bool GData::getValue(const char* szKey, FieldTypeType& type, FieldValueType& val
         }
     }
     return false;
-}
-
-void GData::freeValue(FieldTypeType type, FieldValueType value)
-{
-    if (value.pv == nullptr) return;
-	switch(type)
-	{
-    case GDATA_TYPE_INT64:
-    case GDATA_TYPE_UINT64:
-        freeBuffer(value.pv);
-        break;
-    case GDATA_TYPE_STRING:
-    case GDATA_TYPE_STRINGW:
-    case GDATA_TYPE_BUFFER:
-        freeBuffer(value.pv);
-        break;
-	case GDATA_TYPE_DATA:
-    case GDATA_TYPE_ARRAY:
-    case GDATA_TYPE_OBJECT:
-        ((GObject*)value.pv)->release();
-        break;
-    case GDATA_TYPE_INTVECTOR:
-        freeBuffer(value.pv);
-        break;
-#ifdef GDATA_SUPPORT_COM
-    case GDATA_TYPE_GUID:
-        freeBuffer(value.pv);
-        break;
-    case GDATA_TYPE_INTERFACE:
-        static_cast<IUnknown*>(value.pv)->Release();
-        break;
-#endif
-    default:
-        break;
-	}
-    value.pv = nullptr;
 }
 
 void GData::freeItem(int index)

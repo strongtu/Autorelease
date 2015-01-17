@@ -129,6 +129,12 @@
     <ClCompile Include="..\..\source\jungle\garray.cpp">
       <Filter>jungle</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\jungle\gfield.cpp">
+      <Filter>jungle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\jungle\garraydoc.cpp">
+      <Filter>jungle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphic">
@@ -167,5 +173,10 @@
     <Filter Include="io">
       <UniqueIdentifier>{cfe6c139-efb1-4340-a4bf-a8c9ba25bffc}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\source\jungle\gfield.h">
+      <Filter>jungle</Filter>
+    </None>
   </ItemGroup>
 </Project>
